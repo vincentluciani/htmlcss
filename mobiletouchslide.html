@@ -5,46 +5,35 @@
 <meta http-equiv="X-UA-Compatible" content="ie-edge">
 <style>
 body{
-margin:0;
-padding:20px;
+	
 }
 .slider-container{
-  padding:10px 0px;
- 
-/*  
-width:100%;
-overflow-x:auto;
-  overflow-y:hidden;  
-  -webkit-overflow-scrolling:touch;*/
-  
   display: flex;
   flex-direction:row;
-    overflow-x: auto;
-  scroll-behavior:smooth;
-  
+  overflow-x: auto;
+  scroll-behavior:smooth; 
 }
 .slide{
 
 
- /* -webkit-overflow-scrolling:touch;
-  scroll-snap-points-x:repeat(300px;);
-  scroll-snap-type:mandatory;*/
 }
 .slide .image{
- flex-shrink:0;
-  width:300px;
+  flex-shrink:0;
+  width:200px;
   display:block;
+  margin:10px;
 }
 
 </style>
 </head>
 <body>
-
-<section class="slider-container">
+<div id="container">
+<div class="slider-container">
 <div id="slide1" class="slide"><img class="image" src="image1.jpg"></div>
 <div id="slide2" class="slide"><img class="image" src="image2.jpg"></div>
 <div id="slide3" class="slide"><img class="image" src="image3.jpg"></div>
 <div id="slide4" class="slide"><img class="image" src="image4.jpg"></div>
-</section>
+</div>
+</div>
 
 </body>
