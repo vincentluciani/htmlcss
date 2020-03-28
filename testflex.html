@@ -1,0 +1,49 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.container{
+display:flex;
+/*justify-content: flex-end;*/
+justify-content:space-around;
+align-content:space-around;
+/*justify-content:space-between;*/
+flex-direction:row;
+flex-wrap: wrap;
+align-items: center;
+/*justify-content: center;*/
+height:600px;
+max-width:2000px;
+background:yellow;
+}
+.box{
+border:1px solid black;
+width:50px;
+margin:5px;
+line-height: 75px;
+background:red;
+text-align: center;
+}
+
+</style>
+<body>
+<div class="container">
+<div class="box" style="order: 12">1</div>
+<div class="box" style="order: 9">2</div>
+<div class="box" style="order: 8;align-self: flex-start">3</div>
+<div class="box" style="order: 6">4</div>
+<div class="box" style="order: 4;flex-shrink: 0">5</div>
+<div class="box" style="order: 3">6</div>
+<div class="box" style="order: 2">7</div>
+<div class="box" style="order: 1">8</div>
+<div class="box" style="order: 5">9</div>
+<div class="box" style="order: 7">10</div>
+<div class="box" style="order: 10">11</div>
+<div class="box" style="order: 11;flex-grow: 8">12</div>
+</div>
+
+</body>
+
+
+
+</html>
