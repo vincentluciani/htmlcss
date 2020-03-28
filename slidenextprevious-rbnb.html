@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie-edge">
+<style>
+body{
+	
+}
+.slider-container{
+  /*display: flex;
+  flex-direction:row;
+  overflow-x: auto;
+  scroll-behavior:smooth; 
+  max-width:200px;*/
+  position: relative;
+    width: 640px;
+    height: 310px;
+    overflow: hidden;
+}
+
+.slide .image{
+  flex-shrink:0;
+  max-width:200px;
+  display:block;
+  margin:10px;
+}
+
+#dummy-slide-4:target ~ #navigation-container .navigation{background:green;}
+#dummy-slide-4:target ~ #navigation-container .slide2 {   background:red;}
+#dummy-slide-4:target ~ #slider-container > #slider { background-position: -640px 0, 0 0, 640px 0, 1280px 0;transition: background 1s;}
+
+
+#slider{
+position: absolute;
+    left: 0;
+    top: 100;
+    width: 400%;
+    height: 310px;
+    background: url(image1.jpg) 0 0 no-repeat, url(image2.jpg) 640px 0 no-repeat, url(image3.jpg) 1280px 0 no-repeat, url(image4.jpg) 1920px 0 no-repeat;
+}
+
+}
+
+#test1,#test2{
+  width:100px;
+  height:100px;
+  }
+#test1{
+  background:red;
+  }
+ #test2{
+ background:green;
+ }
+ 
+ #test1:target ~ #testcontainer > #test2{background:blue;}
+</style>
+</head>
+<body>
+/* problem is that i cannot access the navigation container child from slidex because slide x is a cousin and not a sibbling */
+
+<div id="dummy-slide-1" class="slide"></div>
+<div id="dummy-slide-2" class="slide"></div>
+<div id="dummy-slide-3" class="slide"></div>
+<div id="dummy-slide-4" class="slide"></div>
+
+
+<div id="navigation-container">
+<div id="navigation1">test</div>
+<a class="navigation next slide2" href="#slide3">></a>
+<a class="navigation next slide3" href="#slide4">></a>
+<a class="navigation next slide4" href="#slide1">></a>
+<a class="navigation previous slide1" href="#slide4"><</a>
+<a class="navigation previous slide2" href="#slide1"><</a>
+<a class="navigation previous slide3" href="#slide2"><</a>
+<a class="navigation previous slide4" href="#slide3"><</a>
+<a class="navigation next slide1" href="#dummy-slide-2">></a>
+<a class="navigation next slide2" href="#dummy-slide-3">></a>
+<a class="navigation next slide3" href="#dummy-slide-4">></a>
+<a class="navigation next slide4" href="#dummy-slide-1">></a>
+<a class="navigation previous slide1" href="#dummy-slide-4"><</a>
+<a class="navigation previous slide2" href="#dummy-slide-1"><</a>
+<a class="navigation previous slide3" href="#dummy-slide-2"><</a>
+<a class="navigation previous slide4" href="#dummy-slide-3"><</a>
+</div>
+
+<div id="slider-container" class="slider-container">
+<!-- <div id="slide1" class="slide"><img class="image" src="image1.jpg"></div>
+<div id="slide2" class="slide"><img class="image" src="image2.jpg"></div>
+<div id="slide3" class="slide"><img class="image" src="image3.jpg"></div>
+<div id="slide4" class="slide"><img class="image" src="image4.jpg"></div> -->
+<div id="slider"></div>
+</div>
+
+<a href="#test1">test2 must be blue</a>
+<div id="test1">test1</div>
+<div id="testcontainer">
+<div id="test2" class="test2">test2</div>
+</div>
+</body>
