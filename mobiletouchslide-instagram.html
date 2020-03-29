@@ -4,6 +4,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <meta http-equiv="X-UA-Compatible" content="ie-edge">
 <style>
+html {
+  scroll-behavior: smooth;
+}
 body{
 	
 }
@@ -24,13 +27,119 @@ body{
 </style>
 </head>
 <body>
-mobile rbnb: same as mobiletouch but image make 100% of screen instead of 75%
-<div class="slider-container">
+instagram has bullet points and as well next and previous. also when starting scrolling it is going autom to next slide
+
+<div id="slider-container" class="slider-container">
 <div id="slide1" class="slide"><img class="image" src="image1.jpg"></div>
 <div id="slide2" class="slide"><img class="image" src="image2.jpg"></div>
 <div id="slide3" class="slide"><img class="image" src="image3.jpg"></div>
 <div id="slide4" class="slide"><img class="image" src="image4.jpg"></div>
 </div>
+<div id="test"></div>
+<script>
+didHumanScroll = true;
+sliderContainerElement = document.getElementById('slider-container');
+currentSlide=0;
+totalSlide=4;
+lastScrollLeft=0;
 
+function doSomething(scrollLeft,scrollWidth) {
+  // Do something with the scroll position
+  document.getElementById("test").innerHTML = "scrollLeft:"+scrollLeft+" scrollWidth:"+scrollWidth;
+
+  
+  if ( didHumanScroll == true )
+  {
+	
+	if ( scrollLeft > lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200+100;
+	  if ( scrollLeft > triggerLeftScroll )
+	  {
+        goToNextSlide ();
+      }
+	}
+	else if ( scrollLeft < lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200-100;
+	  if ( scrollLeft < triggerLeftScroll )
+	  {
+		goToPreviousSlide();
+	  }
+    }
+  }
+  lastScrollLeft = scrollLeft;
+};
+
+function goToNextSlide(){
+    didHumanScroll = false;
+	var newLeftScroll;
+    if ( currentSlide <  (totalSlide-1) )
+	{
+	  newLeftScroll = currentSlide * 200 + 200;
+	}
+	else
+	{
+	  newLeftScroll = 0;
+	}
+	
+	currentSlide+=1;
+	document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+};
+
+function goToPreviousSlide(){
+    didHumanScroll = false;
+    if ( currentSlide >  0 )
+	{
+	  newLeftScroll = currentSlide * 200 - 200;
+	  currentSlide-=1;
+	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	}
+	
+
+};
+
+
+function listenToScroll()
+{
+
+	scrollLeft = sliderContainerElement.scrollLeft;
+	scrollWidth = sliderContainerElement.scrollWidth;
+	doSomething(scrollLeft,scrollWidth);
+	
+	if (scrollLeft%200 == 0)
+	{
+	  didHumanScroll = true;
+	}
+};
+
+sliderContainerElement.addEventListener('scroll',listenToScroll);
+
+
+
+</script>
+
+
+
+<script> /* from w3c school 
+var x = document.getElementById("myDIV");
+if (x.addEventListener) {
+  x.addEventListener("mousemove", myFunction);
+} else if (x.attachEvent) {
+  x.attachEvent("onmousemove", myFunction);
+}
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = Math.random();
+}
+
+function removeHandler() {
+  if (x.removeEventListener) {
+    x.removeEventListener("mousemove", myFunction);
+  } else if (x.detachEvent) {
+    x.detachEvent("onmousemove", myFunction);
+  }
+}*/
+</script>
 
 </body>
