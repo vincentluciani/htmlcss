@@ -8,7 +8,6 @@
   width:640px;
   margin-left:auto;
   margin-right:auto;
-  margin-top:20px;
 }
 .slider-container{
   position: relative;
@@ -57,17 +56,21 @@
   float:right;
 }
 
-#bulletpoints{
+#bullet-points{
   position: relative;
-  top: 556px;
   z-index: 100;
-  left: 195px;
-  color: white;
+  left: 250px;
+  font-size:27px;
+  top: -61px;
 }
-
+ul{
+  overflow: hidden;/* to avoid messing up with the rest*/
+}
 li {
   float: left;
   width: 10px;
+  color:lightgrey;
+  margin-right: 5px;
 } 
  
 #navigation-container{
@@ -78,19 +81,26 @@ li {
 #dummy-slide-1:target ~ #navigation-container .navigation{display:none;}
 #dummy-slide-1:target ~ #navigation-container .slide1 {display:flex;}
 #dummy-slide-1:target ~ #slider-container > #slider { background-position: 0 0, 640px 0, 1280px 0, 1920px 0;;transition: background 1s;}
+#dummy-slide-1:target ~ #bullet-points li {color:lightgrey;}
+#dummy-slide-1:target ~ #bullet-points .bullet-1 {color:white;}
 
 #dummy-slide-2:target ~ #navigation-container .navigation{display:none;}
 #dummy-slide-2:target ~ #navigation-container .slide2 {display:flex;}
 #dummy-slide-2:target ~ #slider-container > #slider { background-position: -640px 0, 0 0, 640px 0, 1280px 0;transition: background 1s;}
+#dummy-slide-2:target ~ #bullet-points li {color:lightgrey;}
+#dummy-slide-2:target ~ #bullet-points .bullet-2 {color:white;}
 
 #dummy-slide-3:target ~ #navigation-container .navigation{display:none;}
 #dummy-slide-3:target ~ #navigation-container .slide3 {display:flex;}
 #dummy-slide-3:target ~ #slider-container > #slider { background-position: -1280px 0, -640px 0, 0 0, 640px 0;transition: background 1s;}
+#dummy-slide-3:target ~ #bullet-points li {color:lightgrey;}
+#dummy-slide-3:target ~ #bullet-points .bullet-3 {color:white;}
 
 #dummy-slide-4:target ~ #navigation-container .navigation{display:none;}
 #dummy-slide-4:target ~ #navigation-container .slide4 {display:flex;}
 #dummy-slide-4:target ~ #slider-container > #slider { background-position: -1920px 0, -1280px 0, -640px 0, 0 0;transition: background 1s;}
-
+#dummy-slide-4:target ~ #bullet-points li {color:lightgrey;}
+#dummy-slide-4:target ~ #bullet-points .bullet-4 {color:white;}
 
 #slider{
 position: absolute;
@@ -99,6 +109,10 @@ position: absolute;
     width: 400%;
     height: 426px;
     background: url(image1-640-426.jpg) 0 0 no-repeat, url(image2-640-426.jpg) 640px 0 no-repeat, url(image3-640-426.jpg) 1280px 0 no-repeat, url(image4-640-426.jpg) 1920px 0 no-repeat;
+}
+
+.bullet-1{
+  color:white;
 }
 
 </style>
@@ -110,15 +124,6 @@ position: absolute;
   <div id="dummy-slide-2" class="slide"></div>
   <div id="dummy-slide-3" class="slide"></div>
   <div id="dummy-slide-4" class="slide"></div>
-
-  <div id="bulletpoints">
-    <ul>
-      <a class="" href="#dummy-slide-1"><li></li></a>
-      <a class="" href="#dummy-slide-2"><li></li></a>
-      <a class="" href="#dummy-slide-3"><li></li></a>
-      <a class="" href="#dummy-slide-4"><li></li></a>
-    </ul>	
-  </div>
 
   <div id="navigation-container">
     <a class="navigation previous slide1" href="#dummy-slide-4"><</a>
@@ -133,6 +138,16 @@ position: absolute;
 
   <div id="slider-container" class="slider-container">
     <div id="slider"></div>
+  </div>
+  
+  <div id="bullet-points">
+    <ul>
+      
+	  <li class="bullet-1"></li>
+	  <li class="bullet-2"></li>
+      <li class="bullet-3"></li>
+      <li class="bullet-4"></li>
+    </ul>	
   </div>
 
 <div>
