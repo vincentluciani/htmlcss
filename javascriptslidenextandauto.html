@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie-edge">
+<style>
+html {
+  scroll-behavior: smooth;
+}
+body{
+	
+}
+#overall-wrapper{
+  width:200px;
+}
+
+.slider-container{
+  display: flex;
+  flex-direction:row;
+  overflow-x: auto;
+  scroll-behavior:smooth; 
+  width: 200px;
+}
+
+.slide .image{
+  flex-shrink:0;
+  max-width:200px;
+  display:block;
+}
+
+
+.navigation{
+
+text-decoration: none;
+    corner-radius: 50%;
+    width: 10px;
+    height: 10px;
+    position: relative;
+    top: -182px;
+    z-index: 100;
+    width: 26px;
+    height: 24px;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 10px;
+	cursor:pointer;
+}
+}
+
+.navigation:hover{
+  color:lightgrey;
+}
+  
+.previous{
+  float:left;
+}
+.next{
+  float:right;
+}
+
+#bullet-points{
+  position: relative;
+  z-index: 100;
+  font-size:27px;
+  top: -62px;
+  margin-left:auto;
+  margin-right:auto;
+  width: 100px;
+}
+.active{
+  color:red;
+}
+ul{
+  overflow: hidden;/* to avoid messing up with the rest*/
+}
+li {
+  float: left;
+  width: 10px;
+  color:lightgrey;
+  margin-right: 5px;
+} 
+
+
+</style>
+</head>
+<body>
+instagram has bullet points and as well next and previous. also when starting scrolling it is going autom to next slide
+
+<div id="overall-wrapper">
+	<div id="slider-container" class="slider-container">
+		<div id="slide1" class="slide"><img class="image" src="image1.jpg"></div>
+		<div id="slide2" class="slide"><img class="image" src="image2.jpg"></div>
+		<div id="slide3" class="slide"><img class="image" src="image3.jpg"></div>
+		<div id="slide4" class="slide"><img class="image" src="image4.jpg"></div>
+	</div>
+	<div id="bullet-points">
+	  <ul>
+		<li id="bullet0" class="bullet"></li>
+		<li id="bullet1" class="bullet"></li>
+		<li id="bullet2" class="bullet"></li>
+		<li id="bullet3" class="bullet"></li>
+	  </ul>	
+	</div>
+	<div id="navigation-container">
+	  <div id="previous-button" class="navigation previous"><</div>
+	  <div id="next-button" class="navigation next">></div>
+	</div>
+	<div id="test"></div>
+</div>
+<script>
+didHumanScroll = true;
+sliderContainerElement = document.getElementById('slider-container');
+nextContainerElement = document.getElementById('next-button');
+previousContainerElement = document.getElementById('previous-button');
+currentSlide=0;
+totalSlide=4;
+lastScrollLeft=0;
+
+function doSomething(scrollLeft,scrollWidth) {
+  // Do something with the scroll position
+  document.getElementById("test").innerHTML = "scrollLeft:"+scrollLeft+" scrollWidth:"+scrollWidth;
+
+  
+  if ( didHumanScroll == true )
+  {
+	
+	if ( scrollLeft > lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200+100;
+	  if ( scrollLeft > triggerLeftScroll )
+	  {
+        goToNextSlide ();
+      }
+	}
+	else if ( scrollLeft < lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200-100;
+	  if ( scrollLeft < triggerLeftScroll )
+	  {
+		goToPreviousSlide();
+	  }
+    }
+  }
+  lastScrollLeft = scrollLeft;
+};
+
+function goToNextSlide(){
+    didHumanScroll = false;
+	var newLeftScroll;
+    if ( currentSlide <  (totalSlide-1) )
+	{
+	  newLeftScroll = currentSlide * 200 + 200;
+	  markBulletAsActive(currentSlide+1);
+	  markBulletAsDeactive(currentSlide);
+	  currentSlide+=1;
+	}
+	else
+	{
+	  newLeftScroll = 0;
+	  markBulletAsActive(0);
+	  markBulletAsDeactive(3);
+	  currentSlide=0;
+	}
+
+
+	document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+};
+
+function markBulletAsActive(slideNumber)
+{
+  var slideId = "bullet"+slideNumber;
+  document.getElementById(slideId).classList.add("active");
+}
+
+function markBulletAsDeactive(slideNumber)
+{
+  var slideId = "bullet"+slideNumber;
+  document.getElementById(slideId).classList.remove("active");
+}
+
+function goToPreviousSlide(){
+    didHumanScroll = false;
+    if ( currentSlide >  0 )
+	{
+	  newLeftScroll = currentSlide * 200 - 200;
+	  markBulletAsDeactive(currentSlide);
+	  markBulletAsActive(currentSlide-1)
+	  currentSlide-=1;
+	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	}
+	
+
+};
+
+
+
+function listenToScroll()
+{
+
+	scrollLeft = sliderContainerElement.scrollLeft;
+	scrollWidth = sliderContainerElement.scrollWidth;
+	doSomething(scrollLeft,scrollWidth);
+	
+	if (scrollLeft%200 == 0)
+	{
+	  didHumanScroll = true;
+	}
+};
+
+function goToNextSlideInLoop(){
+	goToNextSlide();
+	myLoop();
+}
+
+sliderContainerElement.addEventListener('scroll',listenToScroll);
+previousContainerElement.addEventListener('click',goToPreviousSlide);
+nextContainerElement.addEventListener('click',goToNextSlide);
+
+function myLoop () { 
+  setTimeout(goToNextSlideInLoop, 4000);
+}	
+
+myLoop();
+
+</script>
+
+
+
+<script> /* from w3c school 
+var x = document.getElementById("myDIV");
+if (x.addEventListener) {
+  x.addEventListener("mousemove", myFunction);
+} else if (x.attachEvent) {
+  x.attachEvent("onmousemove", myFunction);
+}
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = Math.random();
+}
+
+function removeHandler() {
+  if (x.removeEventListener) {
+    x.removeEventListener("mousemove", myFunction);
+  } else if (x.detachEvent) {
+    x.detachEvent("onmousemove", myFunction);
+  }
+}*/
+</script>
+
+</body>
