@@ -53,7 +53,7 @@ function doSomething(scrollLeft,scrollWidth) {
 	
 	if ( scrollLeft > lastScrollLeft  )
 	{
-	  triggerLeftScroll = currentSlide*200+100;
+	  triggerLeftScroll = currentSlide*200+50;
 	  if ( scrollLeft > triggerLeftScroll )
 	  {
         goToNextSlide ();
@@ -61,7 +61,7 @@ function doSomething(scrollLeft,scrollWidth) {
 	}
 	else if ( scrollLeft < lastScrollLeft  )
 	{
-	  triggerLeftScroll = currentSlide*200-100;
+	  triggerLeftScroll = currentSlide*200-50;
 	  if ( scrollLeft < triggerLeftScroll )
 	  {
 		goToPreviousSlide();

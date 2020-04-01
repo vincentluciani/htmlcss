@@ -20,6 +20,7 @@ body{
   overflow-x: auto;
   scroll-behavior:smooth; 
   width: 200px;
+  overflow: hidden;
 }
 
 .slide .image{
@@ -36,7 +37,7 @@ text-decoration: none;
     width: 10px;
     height: 10px;
     position: relative;
-    top: -182px;
+    top: -152px;
     z-index: 100;
     width: 26px;
     height: 24px;
@@ -46,6 +47,8 @@ text-decoration: none;
     color: white;
     margin: 10px;
 	cursor:pointer;
+	display:flex;
+	font-weight: 900;
 }
 }
 
@@ -63,14 +66,14 @@ text-decoration: none;
 #bullet-points{
   position: relative;
   z-index: 100;
-  font-size:27px;
-  top: -62px;
+  font-size:19px;
+  top: -46px;
   margin-left:auto;
   margin-right:auto;
   width: 100px;
 }
 .active{
-  color:red;
+  color:white;
 }
 ul{
   overflow: hidden;/* to avoid messing up with the rest*/
@@ -128,7 +131,7 @@ function doSomething(scrollLeft,scrollWidth) {
 	
 	if ( scrollLeft > lastScrollLeft  )
 	{
-	  triggerLeftScroll = currentSlide*200+100;
+	  triggerLeftScroll = currentSlide*200+50;
 	  if ( scrollLeft > triggerLeftScroll )
 	  {
         goToNextSlide ();
@@ -136,7 +139,7 @@ function doSomething(scrollLeft,scrollWidth) {
 	}
 	else if ( scrollLeft < lastScrollLeft  )
 	{
-	  triggerLeftScroll = currentSlide*200-100;
+	  triggerLeftScroll = currentSlide*200-50;
 	  if ( scrollLeft < triggerLeftScroll )
 	  {
 		goToPreviousSlide();
