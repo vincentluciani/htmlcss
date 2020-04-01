@@ -59,6 +59,9 @@ text-decoration: none;
 .previous{
   float:left;
 }
+#previous-button{
+  display:none;
+}
 .next{
   float:right;
 }
@@ -120,6 +123,10 @@ previousContainerElement = document.getElementById('previous-button');
 currentSlide=0;
 totalSlide=4;
 lastScrollLeft=0;
+isAutomatic=true;
+
+
+
 
 function doSomething(scrollLeft,scrollWidth) {
   // Do something with the scroll position
@@ -158,6 +165,7 @@ function goToNextSlide(){
 	  markBulletAsActive(currentSlide+1);
 	  markBulletAsDeactive(currentSlide);
 	  currentSlide+=1;
+	  markPreviousButtonAsActive();
 	}
 	else
 	{
@@ -165,6 +173,7 @@ function goToNextSlide(){
 	  markBulletAsActive(0);
 	  markBulletAsDeactive(3);
 	  currentSlide=0;
+	  markPreviousButtonAsInactive();
 	}
 
 
@@ -175,14 +184,43 @@ function markBulletAsActive(slideNumber)
 {
   var slideId = "bullet"+slideNumber;
   document.getElementById(slideId).classList.add("active");
-}
+};
 
 function markBulletAsDeactive(slideNumber)
 {
   var slideId = "bullet"+slideNumber;
   document.getElementById(slideId).classList.remove("active");
-}
+};
 
+function markPreviousButtonAsActive()
+{
+  var previousButton = document.getElementById('previous-button');
+  previousButton.style.display = "flex";
+};
+
+function markPreviousButtonAsInactive()
+{
+  var previousButton = document.getElementById('previous-button');
+  previousButton.style.display = "none";
+};
+
+function adjustOverflowAndAutomatism(){
+  var slideContainer = document.getElementById('slider-container');
+  var navigationContainer = document.getElementById('navigation-container');
+  
+  if (window.screen.width < 1000){
+    if (isAutomatic == true ){
+	  sliderContainerElement.addEventListener('scroll',listenToScroll);
+	}
+    isAutomatic=false;
+    slideContainer.style.overflow = "auto";
+	navigationContainer.style.display="none";
+    
+  }else{
+    slideContainer.style.overflow = "hidden";
+	navigationContainer.style.display="block";
+  }
+}
 function goToPreviousSlide(){
     didHumanScroll = false;
     if ( currentSlide >  0 )
@@ -192,6 +230,9 @@ function goToPreviousSlide(){
 	  markBulletAsActive(currentSlide-1)
 	  currentSlide-=1;
 	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	  if ( currentSlide == 0 ){
+	    markPreviousButtonAsInactive();
+	  }
 	}
 	
 
@@ -215,18 +256,24 @@ function listenToScroll()
 function goToNextSlideInLoop(){
 	goToNextSlide();
 	myLoop();
-}
+};
 
-sliderContainerElement.addEventListener('scroll',listenToScroll);
+if (!isAutomatic){
+  sliderContainerElement.addEventListener('scroll',listenToScroll);
+}
 previousContainerElement.addEventListener('click',goToPreviousSlide);
 nextContainerElement.addEventListener('click',goToNextSlide);
 
 function myLoop () { 
   setTimeout(goToNextSlideInLoop, 4000);
-}	
+};
 
-myLoop();
-
+onload = function(){
+  adjustOverflowAndAutomatism();
+  if (isAutomatic){
+    myLoop();
+  }
+};
 </script>
 
 
