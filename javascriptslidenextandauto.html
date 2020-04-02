@@ -123,7 +123,7 @@ previousContainerElement = document.getElementById('previous-button');
 currentSlide=0;
 totalSlide=4;
 lastScrollLeft=0;
-isAutomatic=true;
+isAutomatic=false;
 
 
 
@@ -159,6 +159,7 @@ function doSomething(scrollLeft,scrollWidth) {
 function goToNextSlide(){
     didHumanScroll = false;
 	var newLeftScroll;
+	
     if ( currentSlide <  (totalSlide-1) )
 	{
 	  newLeftScroll = currentSlide * 200 + 200;
@@ -175,9 +176,18 @@ function goToNextSlide(){
 	  currentSlide=0;
 	  markPreviousButtonAsInactive();
 	}
+	
+	if (currentSlide==3)
+	{
+	  markNextButtonAsInactive();
+	}
 
-
-	document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	if (isInternetExplorer()){
+		/*document.getElementById('slider-container').scrollLeft = newLeftScroll;*/
+		forwardUniversalSmoothScrollTo(document.getElementById('slider-container'),newLeftScroll);
+	} else {
+	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	}
 };
 
 function markBulletAsActive(slideNumber)
@@ -204,6 +214,19 @@ function markPreviousButtonAsInactive()
   previousButton.style.display = "none";
 };
 
+function markNextButtonAsActive()
+{
+  var nextButton = document.getElementById('next-button');
+  nextButton.style.display = "flex";
+};
+
+function markNextButtonAsInactive()
+{
+  var nextButton = document.getElementById('next-button');
+  nextButton.style.display = "none";
+};
+
+
 function adjustOverflowAndAutomatism(){
   var slideContainer = document.getElementById('slider-container');
   var navigationContainer = document.getElementById('navigation-container');
@@ -221,6 +244,23 @@ function adjustOverflowAndAutomatism(){
 	navigationContainer.style.display="block";
   }
 }
+
+function isInternetExplorer(){
+
+    var userAgent = window.navigator.userAgent;
+    var msieFound = userAgent.indexOf("MSIE ");
+	var windowsFound = userAgent.indexOf("Windows ");
+
+    if ( (msieFound > 0) || (windowsFound > 0) ) // Internet Explorer
+    {
+		return true;
+    }
+    else 
+    {
+        return false;
+    }
+
+}
 function goToPreviousSlide(){
     didHumanScroll = false;
     if ( currentSlide >  0 )
@@ -229,7 +269,18 @@ function goToPreviousSlide(){
 	  markBulletAsDeactive(currentSlide);
 	  markBulletAsActive(currentSlide-1)
 	  currentSlide-=1;
-	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	  
+	  if (currentSlide<3)
+	  {
+	    markNextButtonAsActive();
+	  }
+	  if (isInternetExplorer()){
+		/*document.getElementById('slider-container').scrollLeft = newLeftScroll;*/
+		backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),newLeftScroll);
+	  } else {
+	    document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
+	  }
+	
 	  if ( currentSlide == 0 ){
 	    markPreviousButtonAsInactive();
 	  }
@@ -267,6 +318,83 @@ nextContainerElement.addEventListener('click',goToNextSlide);
 function myLoop () { 
   setTimeout(goToNextSlideInLoop, 4000);
 };
+
+
+function setScroll(container,targetPosition){
+  container.scrollLeft = targetPosition;
+};
+  
+function forwardUniversalSmoothScrollTo(container,targetPosition,direction){
+  didHumanScroll = false;
+  currentPosition = container.scrollLeft;
+  speedFactor = 1;
+  increment=0;
+  
+  leftToGo = targetPosition - currentPosition;
+  
+  /*speedFactor = leftToGo * speedFactor;*/
+  increment = speedFactor*Math.log(leftToGo);
+  
+  if (increment < 1.01 ) increment = 1.01;
+  
+  var newPosition = currentPosition + increment;
+  
+  console.log("new position:"+newPosition);
+  console.log("increment:"+increment);
+  console.log("target position:"+targetPosition);
+  console.log(newPosition < targetPosition);
+  console.log("==============");
+  /*if ( leftToGo < 10 ){
+    setTimeout(setScroll,10,container,targetPosition);
+  }*/
+  
+  if ( newPosition < targetPosition )
+  {
+    container.scrollLeft = newPosition; 
+    setTimeout(forwardUniversalSmoothScrollTo,10,container,targetPosition);
+  }  else {
+    setTimeout(setScroll,10,container,targetPosition);
+  }
+
+
+}
+
+function backwardUniversalSmoothScrollTo(container,targetPosition,direction){
+  didHumanScroll = false;
+  currentPosition = container.scrollLeft;
+  speedFactor = 1;
+  increment=0;
+  
+  leftToGo =  currentPosition - targetPosition;
+  
+  /*speedFactor = leftToGo * speedFactor;*/
+  increment = speedFactor*Math.log(leftToGo);
+  
+  if (increment < 1.01 ) increment = 1.01;
+  
+  var newPosition = currentPosition - increment;
+  
+  console.log("new position:"+newPosition);
+  console.log("increment:"+increment);
+  console.log("target position:"+targetPosition);
+  console.log(newPosition < targetPosition);
+  console.log("==============");
+  /*if ( leftToGo < 10 ){
+    setTimeout(setScroll,10,container,targetPosition);
+  }*/
+  
+  if ( newPosition > targetPosition )
+  {
+    container.scrollLeft = newPosition; 
+    setTimeout(backwardUniversalSmoothScrollTo,10,container,targetPosition);
+  }  else {
+    setTimeout(setScroll,10,container,targetPosition);
+  }
+
+
+}
+
+
 
 onload = function(){
   adjustOverflowAndAutomatism();
