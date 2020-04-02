@@ -123,7 +123,7 @@ previousContainerElement = document.getElementById('previous-button');
 currentSlide=0;
 totalSlide=4;
 lastScrollLeft=0;
-isAutomatic=false;
+isAutomatic=true;
 
 
 
@@ -175,16 +175,21 @@ function goToNextSlide(){
 	  markBulletAsDeactive(3);
 	  currentSlide=0;
 	  markPreviousButtonAsInactive();
+	  markNextButtonAsActive();
 	}
 	
 	if (currentSlide==3)
 	{
 	  markNextButtonAsInactive();
-	}
+	} 
 
 	if (isInternetExplorer()){
 		/*document.getElementById('slider-container').scrollLeft = newLeftScroll;*/
-		forwardUniversalSmoothScrollTo(document.getElementById('slider-container'),newLeftScroll);
+		if (currentSlide==0){
+		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),0);
+		} else {
+  		  forwardUniversalSmoothScrollTo(document.getElementById('slider-container'),newLeftScroll);
+		}
 	} else {
 	  document.getElementById('slider-container').scroll({left: newLeftScroll, behavior: 'smooth'});
 	}
