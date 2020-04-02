@@ -327,9 +327,13 @@ function myLoop () {
 
 function setScroll(container,targetPosition){
   container.scrollLeft = targetPosition;
+
 };
   
 function forwardUniversalSmoothScrollTo(container,targetPosition,direction){
+
+  previousContainerElement.removeEventListener('click',goToPreviousSlide);
+	
   didHumanScroll = false;
   currentPosition = container.scrollLeft;
   speedFactor = 1;
@@ -358,6 +362,7 @@ function forwardUniversalSmoothScrollTo(container,targetPosition,direction){
     container.scrollLeft = newPosition; 
     setTimeout(forwardUniversalSmoothScrollTo,10,container,targetPosition);
   }  else {
+    previousContainerElement.addEventListener('click',goToPreviousSlide);
     setTimeout(setScroll,10,container,targetPosition);
   }
 
@@ -365,6 +370,8 @@ function forwardUniversalSmoothScrollTo(container,targetPosition,direction){
 }
 
 function backwardUniversalSmoothScrollTo(container,targetPosition,direction){
+  nextContainerElement.removeEventListener('click',goToNextSlide);
+  
   didHumanScroll = false;
   currentPosition = container.scrollLeft;
   speedFactor = 1;
@@ -393,6 +400,7 @@ function backwardUniversalSmoothScrollTo(container,targetPosition,direction){
     container.scrollLeft = newPosition; 
     setTimeout(backwardUniversalSmoothScrollTo,10,container,targetPosition);
   }  else {
+    nextContainerElement.addEventListener('click',goToNextSlide);
     setTimeout(setScroll,10,container,targetPosition);
   }
 
