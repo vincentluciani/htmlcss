@@ -253,10 +253,11 @@ function adjustOverflowAndAutomatism(){
 function isInternetExplorer(){
 
     var userAgent = window.navigator.userAgent;
-    var msieFound = userAgent.indexOf("MSIE ");
-	var windowsFound = userAgent.indexOf("Windows ");
+    var ieTo10Found = userAgent.indexOf("MSIE ");
+	var ie11Found = userAgent.indexOf("Trident/");
+	var edgeFound = userAgent.indexOf("Edge/");
 
-    if ( (msieFound > 0) || (windowsFound > 0) ) // Internet Explorer
+    if ( (ieTo10Found > 0) || (ie11Found > 0) || (edgeFound > 0) ) // Internet Explorer
     {
 		return true;
     }
