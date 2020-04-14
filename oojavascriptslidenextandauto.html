@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie-edge">
+<style>
+html {
+  /*scroll-behavior: smooth;*/
+}
+body{
+	
+}
+#overall-wrapper{
+  width:200px;
+}
+
+.slider-container{
+  display: flex;
+  flex-direction:row;
+  overflow-x: auto;
+  /*scroll-behavior:smooth; */
+  width: 200px;
+  overflow: hidden;
+}
+
+.slide .image{
+  flex-shrink:0;
+  max-width:200px;
+  display:block;
+}
+
+
+.navigation{
+
+text-decoration: none;
+    position: relative;
+    top: -152px;
+    z-index: 100;
+    width: 26px;
+    height: 24px;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 10px;
+	cursor:pointer;
+	display:flex;
+	font-weight: 900;
+}
+}
+
+.navigation:hover{
+  color:lightgrey;
+}
+  
+.previous{
+  float:left;
+}
+#previous-button{
+  display:none;
+}
+.next{
+  float:right;
+}
+
+#bullet-points{
+  position: relative;
+  z-index: 100;
+  font-size:19px;
+  top: -46px;
+  margin-left:auto;
+  margin-right:auto;
+  width: 100px;
+}
+.active{
+  color:white;
+}
+ul{
+  overflow: hidden;/* to avoid messing up with the rest*/
+}
+li {
+  float: left;
+  width: 10px;
+  color:lightgrey;
+  margin-right: 5px;
+} 
+
+
+</style>
+</head>
+<body>
+instagram has bullet points and as well next and previous. also when starting scrolling it is going autom to next slide
+
+<div id="overall-wrapper">
+	<div id="slider-container" class="slider-container">
+		<div id="slide1" class="slide"><img class="image" src="image1.jpg"></div>
+		<div id="slide2" class="slide"><img class="image" src="image2.jpg"></div>
+		<div id="slide3" class="slide"><img class="image" src="image3.jpg"></div>
+		<div id="slide4" class="slide"><img class="image" src="image4.jpg"></div>
+	</div>
+	<div id="bullet-points">
+	  <ul>
+		<li id="bullet0" class="bullet"></li>
+		<li id="bullet1" class="bullet"></li>
+		<li id="bullet2" class="bullet"></li>
+		<li id="bullet3" class="bullet"></li>
+	  </ul>	
+	</div>
+	<div id="navigation-container">
+	  <div id="previous-button" class="navigation previous"><</div>
+	  <div id="next-button" class="navigation next">></div>
+	</div>
+	<div id="test"></div>
+</div>
+<script>
+didHumanScroll = true;
+
+currentSlide=0;
+totalSlide=4;
+lastScrollLeft=0;
+isAutomatic=false;
+
+
+var sliderParameters = { 
+  isAutomatic: false,
+  numberOfSlides: 4,
+  slideWidth:200,
+  widthTriggeringMove:50,
+  maxWidthForAutomatic:1000,
+  sliderContainerId: "slider-container",
+  navigationParameters:{
+    nextButtonId: "next-button",
+    previousButtonId: "previous-button",
+    bulletIdPrefix: "bullet"
+  }
+};
+  
+
+
+
+function Slider(parameters) {
+
+	var parameters = parameters;
+	var status = {
+    isManualMoveForwardInProgress : false,
+	isManualMoveBackwardInProgress : false,
+	isAutomaticMoveForwardInProgress : false,
+	isAutomaticMoveBackwardInProgress : false,
+	isSemiAutomaticMoveForwardInProgress : false,
+	isSemiAutomaticMoveBackwardInProgress : false,
+	isStill : true,
+	didHumanScrollWithFinger: false,
+	currentSlide:0
+	};
+	
+	var sliderContainer = document.getElementById(parameters.sliderContainerId);
+	var navigation = new Navigation(parameters.navigationParameters);
+		
+	var startMovingForwardManually = function ()
+	{
+		status.isManualMoveForwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	var startMovingBackwardManually = function ()
+	{
+		status.isManualMoveBackwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	var startMovingBackwardAutomatically = function ()
+	{
+		status.isAutomaticMoveForwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	var startMovingForwardAutomatically = function ()
+	{
+		status.isAutomaticMoveBackwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	/* this function is called everytime the user manually scrolls with his finger. actOnHumanScroll is 
+	   a semi-automatic function which completes this scroll by going automatically to the next slide
+	   when the visitor scrolled more than a certain number of pixels.
+	   It should not be used when moving:
+	   - upon using the next or previous button
+	   - upon automatic scroll
+	   - when the semi-automatic move is triggered */
+	   
+	var listenToHumanScrollWithFinger = function ()
+	{		
+	
+		var scrollLeft = sliderContainer.scrollLeft;
+		var scrollWidth = sliderContainer.scrollWidth;
+		
+		if (status.didHumanScrollWithFinger == true)
+		{
+
+		  actOnHumanScroll(scrollLeft,scrollWidth);
+		}
+		if (scrollLeft%parameters.slideWidth == 0)
+		{
+		  status.didHumanScrollWithFinger = true;
+		}
+	};
+	
+	var actOnHumanScroll = function ()
+	{
+		console.log("acting on human scroll");
+	};
+
+	var goToNextSlide = function(){
+	
+		
+		var newLeftScroll;
+		
+		if ( status.currentSlide <  (parameters.numberOfSlides-1) )
+		{
+		  newLeftScroll = status.currentSlide * parameters.slideWidth + parameters.slideWidth;
+		  navigation.markBulletAsActive(status.currentSlide+1);
+		  navigation.markBulletAsDeactive(status.currentSlide);
+		  status.currentSlide+=1;
+		  navigation.markPreviousButtonAsActive();
+		}
+		else
+		{
+		  newLeftScroll = 0;
+		  navigation.markBulletAsActive(0);
+		  navigation.markBulletAsDeactive(3);
+		  status.currentSlide=0;
+		  navigation.markPreviousButtonAsInactive();
+		  navigation.markNextButtonAsActive();
+		}
+		
+		if (status.currentSlide==3)
+		{
+		  navigation.markNextButtonAsInactive();
+		} 
+	
+		forwardUniversalSmoothScrollTo(sliderContainer,newLeftScroll);
+		
+	};
+	
+	var goToNextSlideWithNextButton = function(){
+		
+		console.log("Going to next slide with Next button");
+		startMovingForwardManually();
+		
+		goToNextSlide();
+	};
+	
+	
+	var goToPreviousSlide = function()
+	{
+
+			
+		var newLeftScroll;
+			
+		if ( status.currentSlide >  0 )
+		{
+		  newLeftScroll = status.currentSlide * parameters.slideWidth - parameters.slideWidth;
+		  navigation.markBulletAsDeactive(status.currentSlide);
+		  navigation.markBulletAsActive(status.currentSlide-1)
+		  status.currentSlide-=1;
+			  
+		  if (status.currentSlide<3)
+		  {
+			navigation.markNextButtonAsActive();
+		  }
+		  
+		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),newLeftScroll);
+
+			
+		  if ( status.currentSlide == 0 ){
+			navigation.markPreviousButtonAsInactive();
+		  }
+		}
+	};
+	
+	var goToPreviousSlideWithPreviousButton = function()
+	{
+		console.log("Going to previous slide with Previous button");
+		
+	    startMovingBackwardManually();
+		goToPreviousSlide();
+	
+	};
+	
+	var setScroll =  function(container,targetPosition){
+		container.scrollLeft = targetPosition;
+	};		
+			
+	var	forwardUniversalSmoothScrollTo = function (container,targetPosition,direction)
+	{
+
+	  /*previousContainerElement.removeEventListener('click',goToPreviousSlide);*/
+		didHumanScroll = false;
+		currentPosition = container.scrollLeft;
+		speedFactor = 5;
+		increment=0;
+				  
+		leftToGo = targetPosition - currentPosition;
+				  
+		increment = speedFactor*Math.log(leftToGo);
+				  
+		if (increment < 1.01 ) increment = 1.01;
+				  
+		var newPosition = currentPosition + increment;
+				  
+		console.log("new position:"+newPosition);
+		console.log("increment:"+increment);
+		console.log("target position:"+targetPosition);
+		console.log(newPosition < targetPosition);
+		console.log("==============");
+				  
+		if ( newPosition < targetPosition )
+		{
+			container.scrollLeft = newPosition; 
+			setTimeout(forwardUniversalSmoothScrollTo,30,container,targetPosition);
+		}  else {
+			/*previousContainerElement.addEventListener('click',goToPreviousSlide);*/
+			setTimeout(setScroll,30,container,targetPosition);
+		}
+			
+	};
+
+	var backwardUniversalSmoothScrollTo = function(container,targetPosition,direction)
+	{
+	 /* nextContainerElement.removeEventListener('click',goToNextSlide);*/
+	  
+	  currentPosition = container.scrollLeft;
+	  speedFactor = 5;
+	  increment=0;
+	  
+	  leftToGo =  currentPosition - targetPosition;
+	  
+	  if ( leftToGo > 0 ) 
+	  {
+		increment = speedFactor*Math.log(leftToGo);
+		if (increment < 1.01 ) increment = 1.01;
+	  }
+	  else increment = 0;
+	  
+	  var newPosition = currentPosition - increment;
+	  
+	  console.log("new position:"+newPosition);
+	  console.log("increment:"+increment);
+	  console.log("target position:"+targetPosition);
+	  console.log(newPosition < targetPosition);
+	  console.log("==============");
+	  
+	  if ( newPosition > targetPosition )
+	  {
+		container.scrollLeft = newPosition; 
+		setTimeout(backwardUniversalSmoothScrollTo,30,container,targetPosition);
+	  }  else {
+		nextContainerElement.addEventListener('click',goToNextSlide);
+		setTimeout(setScroll,30,container,targetPosition);
+	  }
+
+	};
+
+
+	
+	var nextContainerElement = document.getElementById(navigation.nextButtonId);
+	var previousContainerElement = document.getElementById(navigation.previousButtonId);
+	
+	nextContainerElement.addEventListener('click',goToNextSlideWithNextButton);
+	previousContainerElement.addEventListener('click',goToPreviousSlideWithPreviousButton);
+	
+	var sliderContainerElement = document.getElementById(parameters.sliderContainerId);
+	
+	
+	/* During automatic mode, visitor cannot scroll with his finger. Scroll with keyboard or mouse
+	   is imposssible because scroll bar is disabled. Here we say that if we are not in automatic 
+	   mode, we listen to the visitor scrolling with his finger */
+	   
+	if (!parameters.isAutomatic){
+	  sliderContainerElement.addEventListener('scroll',listenToHumanScrollWithFinger);
+	}
+
+
+};
+
+function Navigation(parameters)
+{
+
+	this.parameters = parameters;
+	this.bulletPointPrefix = this.parameters.bulletIdPrefix;
+	this.previousButtonId = this.parameters.previousButtonId;
+	this.nextButtonId = this.parameters.nextButtonId;
+	
+	this.markBulletAsActive = function (slideNumber)
+	{
+	  var slideId = this.bulletPointPrefix+slideNumber;
+	  document.getElementById(slideId).classList.add("active");
+	};
+
+	this.markBulletAsDeactive = function (slideNumber)
+	{
+	  var slideId = this.bulletPointPrefix+slideNumber;
+	  document.getElementById(slideId).classList.remove("active");
+	};
+
+	this.markPreviousButtonAsActive = function ()
+	{
+	  var previousButton = document.getElementById(this.previousButtonId);
+	  previousButton.style.display = "flex";
+	};
+
+	this.markPreviousButtonAsInactive = function ()
+	{
+	  var previousButton = document.getElementById(this.previousButtonId);
+	  previousButton.style.display = "none";
+	};
+
+	this.markNextButtonAsActive = function ()
+	{
+	  var nextButton = document.getElementById(this.nextButtonId);
+	  nextButton.style.display = "flex";
+	};
+
+	this.markNextButtonAsInactive = function ()
+	{
+	  var nextButton = document.getElementById(this.nextButtonId);
+	  nextButton.style.display = "none";
+	};
+
+	
+}
+
+var slider = new Slider(sliderParameters);
+
+
+
+
+
+
+
+
+/*=================================================*/
+
+function doSomething(scrollLeft,scrollWidth) {
+  // Do something with the scroll position
+  document.getElementById("test").innerHTML = "scrollLeft:"+scrollLeft+" scrollWidth:"+scrollWidth;
+
+  
+  if ( didHumanScroll == true )
+  {
+	
+	if ( scrollLeft > lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200+50;
+	  if ( scrollLeft > triggerLeftScroll )
+	  {
+        goToNextSlide ();
+      }
+	}
+	else if ( scrollLeft < lastScrollLeft  )
+	{
+	  triggerLeftScroll = currentSlide*200-50;
+	  if ( scrollLeft < triggerLeftScroll )
+	  {
+		goToPreviousSlide();
+	  }
+    }
+  }
+  lastScrollLeft = scrollLeft;
+};
+
+
+
+
+function adjustOverflowAndAutomatism(){
+  var slideContainer = document.getElementById('slider-container');
+  var navigationContainer = document.getElementById('navigation-container');
+  
+  if (window.screen.width < 1000){
+    if (isAutomatic == true ){
+	  sliderContainerElement.addEventListener('scroll',listenToScroll);
+	}
+    isAutomatic=false;
+    slideContainer.style.overflow = "auto";
+	navigationContainer.style.display="none";
+    
+  }else{
+    slideContainer.style.overflow = "hidden";
+	navigationContainer.style.display="block";
+  }
+}
+
+
+
+function goToNextSlideInLoop(){
+	goToNextSlide();
+	myLoop();
+};
+
+
+function myLoop () { 
+  setTimeout(goToNextSlideInLoop, 4000);
+};
+
+
+
+
+/*
+onload = function(){
+  adjustOverflowAndAutomatism();
+  if (isAutomatic){
+    myLoop();
+  }
+};*/
+</script>
+
+
+
+<script> /* from w3c school 
+var x = document.getElementById("myDIV");
+if (x.addEventListener) {
+  x.addEventListener("mousemove", myFunction);
+} else if (x.attachEvent) {
+  x.attachEvent("onmousemove", myFunction);
+}
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = Math.random();
+}
+
+function removeHandler() {
+  if (x.removeEventListener) {
+    x.removeEventListener("mousemove", myFunction);
+  } else if (x.detachEvent) {
+    x.detachEvent("onmousemove", myFunction);
+  }
+}*/
+</script>
+
+</body>
