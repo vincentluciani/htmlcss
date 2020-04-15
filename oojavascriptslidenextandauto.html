@@ -124,9 +124,9 @@ var sliderParameters = {
   widthTriggeringMove:50,
   maxWidthForAutomatic:1000,
   sliderContainerId: "slider-container",
-  speedFactor:1,
-  movementTimeoutMilliseconds:300,
-  timeBetweenTwoAutomaticMoves:30000,
+  speedFactor:5,
+  movementTimeoutMilliseconds:30,
+  timeBetweenTwoAutomaticMoves:3000,
   navigationParameters:{
     nextButtonId: "next-button",
     previousButtonId: "previous-button",
@@ -151,9 +151,10 @@ function Slider(parameters) {
 	isSemiAutomaticMoveForwardInProgress : false,
 	isSemiAutomaticMoveBackwardInProgress : false,
 	isStill : true,
-	didHumanScrollWithFinger: false,
+	didHumanScrollWithFinger: true,
 	currentSlide:0,
-	targetPosition:200
+	targetPosition:200,
+	lastScrollLeft:0
 	};
 	
 	var timeOut;
@@ -182,6 +183,18 @@ function Slider(parameters) {
 	var startMovingForwardAutomatically = function()
 	{
 		status.isAutomaticMoveBackwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	var startMovingForwardSemiAutomatic = function()
+	{
+		status.isSemiAutomaticMoveForwardInProgress = true;
+		status.didHumanScrollWithFinger = false;
+	};
+	
+	var startMovingBackwardSemiAutomatic = function()
+	{
+		status.isSemiAutomaticMoveForwardInProgress = true;
 		status.didHumanScrollWithFinger = false;
 	};
 	
@@ -224,9 +237,35 @@ function Slider(parameters) {
 		}
 	};
 	
-	var actOnHumanScroll = function()
+	var actOnHumanScroll = function(scrollLeft,scrollWidth)
 	{
 		console.log("acting on human scroll");
+		
+		  /* document.getElementById("test").innerHTML = "scrollLeft:"+scrollLeft+" scrollWidth:"+scrollWidth; */
+		var triggerLeftScroll;
+  
+		if ( status.didHumanScrollWithFinger == true )
+		{
+			
+			if ( scrollLeft > status.lastScrollLeft  )
+			{
+			  triggerLeftScroll = status.currentSlide*parameters.slideWidth+parameters.widthTriggeringMove;
+			  if ( scrollLeft > triggerLeftScroll )
+			  {
+				goToNextSlideSemiAutomatic();
+			  }
+			}
+			else if ( scrollLeft < status.lastScrollLeft  )
+			{
+			  triggerLeftScroll = status.currentSlide*parameters.slideWidth-parameters.widthTriggeringMove;
+			  if ( scrollLeft < triggerLeftScroll )
+			  {
+				goToPreviousSlideSemiAutomatic();
+			  }
+			}
+		}
+		status.lastScrollLeft = scrollLeft;
+  
 	};
 
 	var goToNextSlide = function(method){
@@ -277,6 +316,17 @@ function Slider(parameters) {
 		
 		goToNextSlide("moveWithNext");
 	};
+	
+	var goToNextSlideSemiAutomatic = function(){
+		
+		clearAllMoves();
+		
+		console.log("Going to next slide semi automatically");
+		startMovingForwardSemiAutomatic();
+		
+		goToNextSlide("moveNextSemiAutomatically");
+	};
+	
 	
 	var goToNextSlideAutomatically = function(){
 		
@@ -335,6 +385,18 @@ function Slider(parameters) {
 		goToPreviousSlide("movePreviousAutomatically");
 	
 	};
+	
+	var goToPreviousSlideSemiAutomatic = function()
+	{
+		console.log("Going to previous slide semi Automatically");
+	
+		clearAllMoves();
+	    startMovingBackwardSemiAutomatic();
+		goToPreviousSlide("movePreviousSemiAutomatically");
+	
+	};
+	
+	
 	
 	var setScroll =  function(container){
 		container.scrollLeft = status.targetPosition;
@@ -409,6 +471,19 @@ function Slider(parameters) {
 	};
 
 
+	var  adjustOverflowAndAutomatism =function()
+	{
+	  var slideContainer = document.getElementById('slider-container');
+	  
+	  if (window.screen.width < 1000){
+		parameters.isAutomatic=false;
+		sliderContainer.style.overflow = "auto";
+		
+	  }else{
+		sliderContainer.style.overflow = "hidden";
+	  }
+	};
+
 	function goToNextSlideInLoop(){
 		goToNextSlideAutomatically();
 		myLoop();
@@ -427,6 +502,7 @@ function Slider(parameters) {
 	
 	var sliderContainerElement = document.getElementById(parameters.sliderContainerId);
 	
+	adjustOverflowAndAutomatism();
 	
 	/* During automatic mode, visitor cannot scroll with his finger. Scroll with keyboard or mouse
 	   is imposssible because scroll bar is disabled. Here we say that if we are not in automatic 
