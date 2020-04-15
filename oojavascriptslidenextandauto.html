@@ -113,12 +113,8 @@ instagram has bullet points and as well next and previous. also when starting sc
 	<div id="test"></div>
 </div>
 <script>
-didHumanScroll = true;
 
-currentSlide=0;
-totalSlide=4;
-lastScrollLeft=0;
-isAutomatic=false;
+
 
 
 var sliderParameters = { 
@@ -159,12 +155,16 @@ function Slider(parameters) {
 	targetPosition:200
 	};
 	
-	var moveWithNextTimeOut;
-	var moveWithPreviousTimeOut;
-	var moveWithAutomaticNextTimeOut;
-	var moveWithAutomaticNextTimeOut;
-	var moveWithSemiAutomaticPreviousTimeOut;
-	var moveWithSemiAutomaticPreviousTimeOut;
+	/*var timeOuts = {
+		moveWithNextTimeOut:null,
+		moveWithPreviousTimeOut:null,
+		moveWithAutomaticNextTimeOut:null,
+		moveWithAutomaticPreviousTimeOut:null,
+		moveWithSemiAutomaticNextTimeOut:null,
+		moveWithSemiAutomaticPreviousTimeOut:null
+	}*/
+	
+	var timeOut;
 	
 	/* clearTimeout(myVar); */
 	
@@ -204,12 +204,24 @@ function Slider(parameters) {
 		status.isSemiAutomaticMoveForwardInProgress = false;
 		status.isSemiAutomaticMoveBackwardInProgress = false;
 
-		clearTimeout(moveWithNextTimeOut);
-		clearTimeout(moveWithPreviousTimeOut);
-		clearTimeout( moveWithAutomaticNextTimeOut);
-		clearTimeout(moveWithAutomaticNextTimeOut);
-		clearTimeout(moveWithSemiAutomaticPreviousTimeOut);
-		clearTimeout(moveWithSemiAutomaticPreviousTimeOut);		
+		if (timeOut)
+		{
+			clearTimeout(timeOut);
+		}
+		/*
+		if (timeOuts.moveWithNextTimeOut) 
+			clearTimeout(timeOuts.moveWithNextTimeOut);
+		if (timeOuts.moveWithPreviousTimeOut) 
+			clearTimeout(timeOuts.moveWithPreviousTimeOut);
+		if (timeOuts.moveWithAutomaticNextTimeOut) 
+			clearTimeout(timeOuts.moveWithAutomaticNextTimeOut);
+		if (timeOuts.moveWithAutomaticPreviousTimeOut) 
+			clearTimeout(timeOuts.moveWithAutomaticPreviousTimeOut);
+		if (timeOuts.moveWithSemiAutomaticNextTimeOut) 
+			clearTimeout(timeOuts.moveWithSemiAutomaticNextTimeOut);
+		if (timeOuts.moveWithSemiAutomaticPreviousTimeOut) 
+			clearTimeout(timeOuts.moveWithSemiAutomaticPreviousTimeOut);
+*/			
 	};
 	/* this function is called everytime the user manually scrolls with his finger. actOnHumanScroll is 
 	   a semi-automatic function which completes this scroll by going automatically to the next slide
@@ -240,7 +252,7 @@ function Slider(parameters) {
 		console.log("acting on human scroll");
 	};
 
-	var goToNextSlide = function(timeOut){
+	var goToNextSlide = function(method){
 		
 		console.log("goToNextSlide launched");
 		var newLeftScroll;
@@ -269,7 +281,7 @@ function Slider(parameters) {
 		} 
 	
 		status.targetPosition = newLeftScroll;
-		forwardUniversalSmoothScrollTo(sliderContainer,timeOut);
+		forwardUniversalSmoothScrollTo(sliderContainer,method);
 		
 	};
 	
@@ -280,10 +292,10 @@ function Slider(parameters) {
 		console.log("Going to next slide with Next button");
 		startMovingForwardManually();
 		
-		goToNextSlide(moveWithNextTimeOut);
+		goToNextSlide("moveWithNext");
 	};
 	
-	var goToPreviousSlide = function(timeOut)
+	var goToPreviousSlide = function(method)
 	{
 		
 		console.log("goToPreviousSlide launched");
@@ -302,7 +314,7 @@ function Slider(parameters) {
 		  }
 		  
 		  status.targetPosition = newLeftScroll;
-		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),timeOut);
+		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),method);
 
 			
 		  if ( status.currentSlide == 0 ){
@@ -317,7 +329,7 @@ function Slider(parameters) {
 	
 		clearAllMoves();
 	    startMovingBackwardManually();
-		goToPreviousSlide(moveWithPreviousTimeOut);
+		goToPreviousSlide("moveWithPrevious");
 	
 	};
 	
@@ -325,10 +337,10 @@ function Slider(parameters) {
 		container.scrollLeft = status.targetPosition;
 	};		
 			
-	var	forwardUniversalSmoothScrollTo = function(container,timeOut)
+	var	forwardUniversalSmoothScrollTo = function(container,method)
 	{
 
-		didHumanScroll = false;
+		status.didHumanScrollWithFinger = false;
 		currentPosition = container.scrollLeft;
 		speedFactor = parameters.speedFactor;
 		increment=0;
@@ -350,14 +362,14 @@ function Slider(parameters) {
 		if ( newPosition < status.targetPosition )
 		{
 			container.scrollLeft = newPosition; 
-			timeOut = setTimeout(forwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container);
+			timeOut = setTimeout(forwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container);		
 		}  else {
 			timeOut = setTimeout(setScroll,parameters.movementTimeoutMilliseconds,container);
 		}
 			
 	};
 
-	var backwardUniversalSmoothScrollTo = function(container,timeOut)
+	var backwardUniversalSmoothScrollTo = function(container,method)
 	{
 	  
 	  currentPosition = container.scrollLeft;
@@ -384,9 +396,9 @@ function Slider(parameters) {
 	  if ( newPosition > status.targetPosition )
 	  {
 		container.scrollLeft = newPosition; 
-		setTimeout(backwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container,status.targetPosition);
+		timeOut = setTimeout(backwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container,status.targetPosition);
 	  }  else {
-		setTimeout(setScroll,parameters.movementTimeoutMilliseconds,container);
+		timeOut = setTimeout(setScroll,parameters.movementTimeoutMilliseconds,container);
 	  }
 
 	};
