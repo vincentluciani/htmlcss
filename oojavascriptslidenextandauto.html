@@ -128,6 +128,8 @@ var sliderParameters = {
   widthTriggeringMove:50,
   maxWidthForAutomatic:1000,
   sliderContainerId: "slider-container",
+  speedFactor:1,
+  movementTimeoutMilliseconds:300,
   navigationParameters:{
     nextButtonId: "next-button",
     previousButtonId: "previous-button",
@@ -135,7 +137,10 @@ var sliderParameters = {
   }
 };
   
-
+/*
+  speedFactor:5,
+  movementTimeoutMilliseconds:30,
+ */
 
 
 function Slider(parameters) {
@@ -153,6 +158,15 @@ function Slider(parameters) {
 	currentSlide:0,
 	targetPosition:200
 	};
+	
+	var moveWithNextTimeOut;
+	var moveWithPreviousTimeOut;
+	var moveWithAutomaticNextTimeOut;
+	var moveWithAutomaticNextTimeOut;
+	var moveWithSemiAutomaticPreviousTimeOut;
+	var moveWithSemiAutomaticPreviousTimeOut;
+	
+	/* clearTimeout(myVar); */
 	
 	var sliderContainer = document.getElementById(parameters.sliderContainerId);
 	var navigation = new Navigation(parameters.navigationParameters);
@@ -181,15 +195,21 @@ function Slider(parameters) {
 		status.didHumanScrollWithFinger = false;
 	};
 	
-	var stopMoving = function()
+	var clearAllMoves = function()
 	{
-		
 	    status.isManualMoveForwardInProgress = false;
 		status.isManualMoveBackwardInProgress = false;
 		status.isAutomaticMoveForwardInProgress = false;
 		status.isAutomaticMoveBackwardInProgress = false;
 		status.isSemiAutomaticMoveForwardInProgress = false;
-		status.isSemiAutomaticMoveBackwardInProgress = false;	
+		status.isSemiAutomaticMoveBackwardInProgress = false;
+
+		clearTimeout(moveWithNextTimeOut);
+		clearTimeout(moveWithPreviousTimeOut);
+		clearTimeout( moveWithAutomaticNextTimeOut);
+		clearTimeout(moveWithAutomaticNextTimeOut);
+		clearTimeout(moveWithSemiAutomaticPreviousTimeOut);
+		clearTimeout(moveWithSemiAutomaticPreviousTimeOut);		
 	};
 	/* this function is called everytime the user manually scrolls with his finger. actOnHumanScroll is 
 	   a semi-automatic function which completes this scroll by going automatically to the next slide
@@ -220,7 +240,7 @@ function Slider(parameters) {
 		console.log("acting on human scroll");
 	};
 
-	var goToNextSlide = function(){
+	var goToNextSlide = function(timeOut){
 		
 		console.log("goToNextSlide launched");
 		var newLeftScroll;
@@ -249,19 +269,21 @@ function Slider(parameters) {
 		} 
 	
 		status.targetPosition = newLeftScroll;
-		forwardUniversalSmoothScrollTo(sliderContainer);
+		forwardUniversalSmoothScrollTo(sliderContainer,timeOut);
 		
 	};
 	
 	var goToNextSlideWithNextButton = function(){
 		
+		clearAllMoves();
+		
 		console.log("Going to next slide with Next button");
 		startMovingForwardManually();
 		
-		goToNextSlide();
+		goToNextSlide(moveWithNextTimeOut);
 	};
 	
-	var goToPreviousSlide = function()
+	var goToPreviousSlide = function(timeOut)
 	{
 		
 		console.log("goToPreviousSlide launched");
@@ -280,7 +302,7 @@ function Slider(parameters) {
 		  }
 		  
 		  status.targetPosition = newLeftScroll;
-		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'));
+		  backwardUniversalSmoothScrollTo(document.getElementById('slider-container'),timeOut);
 
 			
 		  if ( status.currentSlide == 0 ){
@@ -292,9 +314,10 @@ function Slider(parameters) {
 	var goToPreviousSlideWithPreviousButton = function()
 	{
 		console.log("Going to previous slide with Previous button");
-		
+	
+		clearAllMoves();
 	    startMovingBackwardManually();
-		goToPreviousSlide();
+		goToPreviousSlide(moveWithPreviousTimeOut);
 	
 	};
 	
@@ -302,13 +325,12 @@ function Slider(parameters) {
 		container.scrollLeft = status.targetPosition;
 	};		
 			
-	var	forwardUniversalSmoothScrollTo = function(container)
+	var	forwardUniversalSmoothScrollTo = function(container,timeOut)
 	{
 
-	  /*previousContainerElement.removeEventListener('click',goToPreviousSlide);*/
 		didHumanScroll = false;
 		currentPosition = container.scrollLeft;
-		speedFactor = 5;
+		speedFactor = parameters.speedFactor;
 		increment=0;
 				  
 		leftToGo = status.targetPosition - currentPosition;
@@ -322,26 +344,24 @@ function Slider(parameters) {
 		console.log("new position:"+newPosition);
 		console.log("increment:"+increment);
 		console.log("target position:"+status.targetPosition);
-		/*console.log(newPosition < status.targetPosition);*/
+		console.log(newPosition < status.targetPosition);
 		console.log("==============");
 				  
 		if ( newPosition < status.targetPosition )
 		{
 			container.scrollLeft = newPosition; 
-			setTimeout(forwardUniversalSmoothScrollTo,30,container);
+			timeOut = setTimeout(forwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container);
 		}  else {
-			/*previousContainerElement.addEventListener('click',goToPreviousSlide);*/
-			setTimeout(setScroll,30,container);
+			timeOut = setTimeout(setScroll,parameters.movementTimeoutMilliseconds,container);
 		}
 			
 	};
 
-	var backwardUniversalSmoothScrollTo = function(container)
+	var backwardUniversalSmoothScrollTo = function(container,timeOut)
 	{
-	 /* nextContainerElement.removeEventListener('click',goToNextSlide);*/
 	  
 	  currentPosition = container.scrollLeft;
-	  speedFactor = 5;
+	  speedFactor = parameters.speedFactor;
 	  increment=0;
 	  
 	  leftToGo =  currentPosition - status.targetPosition;
@@ -358,16 +378,15 @@ function Slider(parameters) {
 	  console.log("new position:"+newPosition);
 	  console.log("increment:"+increment);
 	  console.log("target position:"+status.targetPosition);
-	 /* console.log(newPosition < status.targetPosition);*/
+	  console.log(newPosition < status.targetPosition);
 	  console.log("==============");
 	  
 	  if ( newPosition > status.targetPosition )
 	  {
 		container.scrollLeft = newPosition; 
-		setTimeout(backwardUniversalSmoothScrollTo,30,container,status.targetPosition);
+		setTimeout(backwardUniversalSmoothScrollTo,parameters.movementTimeoutMilliseconds,container,status.targetPosition);
 	  }  else {
-		/*nextContainerElement.addEventListener('click',goToNextSlide);*/
-		setTimeout(setScroll,30,container);
+		setTimeout(setScroll,parameters.movementTimeoutMilliseconds,container);
 	  }
 
 	};
