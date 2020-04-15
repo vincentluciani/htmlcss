@@ -118,7 +118,7 @@ instagram has bullet points and as well next and previous. also when starting sc
 
 
 var sliderParameters = { 
-  isAutomatic: false,
+  isAutomatic: true,
   numberOfSlides: 4,
   slideWidth:200,
   widthTriggeringMove:50,
@@ -126,6 +126,7 @@ var sliderParameters = {
   sliderContainerId: "slider-container",
   speedFactor:1,
   movementTimeoutMilliseconds:300,
+  timeBetweenTwoAutomaticMoves:30000,
   navigationParameters:{
     nextButtonId: "next-button",
     previousButtonId: "previous-button",
@@ -155,18 +156,7 @@ function Slider(parameters) {
 	targetPosition:200
 	};
 	
-	/*var timeOuts = {
-		moveWithNextTimeOut:null,
-		moveWithPreviousTimeOut:null,
-		moveWithAutomaticNextTimeOut:null,
-		moveWithAutomaticPreviousTimeOut:null,
-		moveWithSemiAutomaticNextTimeOut:null,
-		moveWithSemiAutomaticPreviousTimeOut:null
-	}*/
-	
 	var timeOut;
-	
-	/* clearTimeout(myVar); */
 	
 	var sliderContainer = document.getElementById(parameters.sliderContainerId);
 	var navigation = new Navigation(parameters.navigationParameters);
@@ -208,20 +198,7 @@ function Slider(parameters) {
 		{
 			clearTimeout(timeOut);
 		}
-		/*
-		if (timeOuts.moveWithNextTimeOut) 
-			clearTimeout(timeOuts.moveWithNextTimeOut);
-		if (timeOuts.moveWithPreviousTimeOut) 
-			clearTimeout(timeOuts.moveWithPreviousTimeOut);
-		if (timeOuts.moveWithAutomaticNextTimeOut) 
-			clearTimeout(timeOuts.moveWithAutomaticNextTimeOut);
-		if (timeOuts.moveWithAutomaticPreviousTimeOut) 
-			clearTimeout(timeOuts.moveWithAutomaticPreviousTimeOut);
-		if (timeOuts.moveWithSemiAutomaticNextTimeOut) 
-			clearTimeout(timeOuts.moveWithSemiAutomaticNextTimeOut);
-		if (timeOuts.moveWithSemiAutomaticPreviousTimeOut) 
-			clearTimeout(timeOuts.moveWithSemiAutomaticPreviousTimeOut);
-*/			
+
 	};
 	/* this function is called everytime the user manually scrolls with his finger. actOnHumanScroll is 
 	   a semi-automatic function which completes this scroll by going automatically to the next slide
@@ -281,7 +258,13 @@ function Slider(parameters) {
 		} 
 	
 		status.targetPosition = newLeftScroll;
-		forwardUniversalSmoothScrollTo(sliderContainer,method);
+		
+		if (status.currentSlide==0)
+		{
+			backwardUniversalSmoothScrollTo(sliderContainer,method);
+		} else {
+			forwardUniversalSmoothScrollTo(sliderContainer,method);
+		}
 		
 	};
 	
@@ -293,6 +276,16 @@ function Slider(parameters) {
 		startMovingForwardManually();
 		
 		goToNextSlide("moveWithNext");
+	};
+	
+	var goToNextSlideAutomatically = function(){
+		
+		clearAllMoves();
+		
+		console.log("Going to next slide automatically");
+		startMovingForwardAutomatically();
+		
+		goToNextSlide("moveNextAutomatically");
 	};
 	
 	var goToPreviousSlide = function(method)
@@ -333,6 +326,16 @@ function Slider(parameters) {
 	
 	};
 	
+	var goToPreviousSlideAutomatically = function()
+	{
+		console.log("Going to previous slide with Automatically");
+	
+		clearAllMoves();
+	    startMovingBackwardAutomatically();
+		goToPreviousSlide("movePreviousAutomatically");
+	
+	};
+	
 	var setScroll =  function(container){
 		container.scrollLeft = status.targetPosition;
 	};		
@@ -353,6 +356,7 @@ function Slider(parameters) {
 				  
 		var newPosition = currentPosition + increment;
 				  
+		console.log("universal forward called by :"+method);
 		console.log("new position:"+newPosition);
 		console.log("increment:"+increment);
 		console.log("target position:"+status.targetPosition);
@@ -387,6 +391,7 @@ function Slider(parameters) {
 	  
 	  var newPosition = currentPosition - increment;
 	  
+	  console.log("universal backward called by :"+method);
 	  console.log("new position:"+newPosition);
 	  console.log("increment:"+increment);
 	  console.log("target position:"+status.targetPosition);
@@ -404,6 +409,15 @@ function Slider(parameters) {
 	};
 
 
+	function goToNextSlideInLoop(){
+		goToNextSlideAutomatically();
+		myLoop();
+	};
+
+
+	function myLoop () { 
+	  setTimeout(goToNextSlideInLoop, parameters.timeBetweenTwoAutomaticMoves);
+	};
 	
 	var nextContainerElement = document.getElementById(navigation.nextButtonId);
 	var previousContainerElement = document.getElementById(navigation.previousButtonId);
@@ -420,6 +434,8 @@ function Slider(parameters) {
 	   
 	if (!parameters.isAutomatic){
 	  sliderContainerElement.addEventListener('scroll',listenToHumanScrollWithFinger);
+	} else {
+		myLoop ();
 	}
 
 
@@ -533,16 +549,6 @@ function adjustOverflowAndAutomatism(){
 }
 
 
-
-function goToNextSlideInLoop(){
-	goToNextSlide();
-	myLoop();
-};
-
-
-function myLoop () { 
-  setTimeout(goToNextSlideInLoop, 4000);
-};
 
 
 
