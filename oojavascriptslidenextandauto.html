@@ -497,8 +497,23 @@ function Slider(parameters) {
 	var nextContainerElement = document.getElementById(navigation.nextButtonId);
 	var previousContainerElement = document.getElementById(navigation.previousButtonId);
 	
-	nextContainerElement.addEventListener('click',goToNextSlideWithNextButton);
-	previousContainerElement.addEventListener('click',goToPreviousSlideWithPreviousButton);
+
+	if (nextContainerElement.addEventListener)
+	{
+		nextContainerElement.addEventListener('click',goToNextSlideWithNextButton);
+	} else
+	{
+		nextContainerElement.attachEvent('onclick',goToNextSlideWithNextButton);
+	}
+	
+	if (previousContainerElement)
+	{
+		previousContainerElement.addEventListener('click',goToPreviousSlideWithPreviousButton);
+	}else
+	{
+		previousContainerElement.attachEvent('onclick',goToPreviousSlideWithPreviousButton);
+	}
+	
 	
 	var sliderContainerElement = document.getElementById(parameters.sliderContainerId);
 	
@@ -564,101 +579,10 @@ function Navigation(parameters)
 	
 }
 
-var slider = new Slider(sliderParameters);
-
-
-
-
-
-
-
-
-/*=================================================*/
-
-function doSomething(scrollLeft,scrollWidth) {
-  // Do something with the scroll position
-  document.getElementById("test").innerHTML = "scrollLeft:"+scrollLeft+" scrollWidth:"+scrollWidth;
-
-  
-  if ( didHumanScroll == true )
-  {
-	
-	if ( scrollLeft > lastScrollLeft  )
-	{
-	  triggerLeftScroll = currentSlide*200+50;
-	  if ( scrollLeft > triggerLeftScroll )
-	  {
-        goToNextSlide ();
-      }
-	}
-	else if ( scrollLeft < lastScrollLeft  )
-	{
-	  triggerLeftScroll = currentSlide*200-50;
-	  if ( scrollLeft < triggerLeftScroll )
-	  {
-		goToPreviousSlide();
-	  }
-    }
-  }
-  lastScrollLeft = scrollLeft;
-};
-
-
-
-
-function adjustOverflowAndAutomatism(){
-  var slideContainer = document.getElementById('slider-container');
-  var navigationContainer = document.getElementById('navigation-container');
-  
-  if (window.screen.width < 1000){
-    if (isAutomatic == true ){
-	  sliderContainerElement.addEventListener('scroll',listenToScroll);
-	}
-    isAutomatic=false;
-    slideContainer.style.overflow = "auto";
-	navigationContainer.style.display="none";
-    
-  }else{
-    slideContainer.style.overflow = "hidden";
-	navigationContainer.style.display="block";
-  }
-}
-
-
-
-
-
-
-/*
 onload = function(){
-  adjustOverflowAndAutomatism();
-  if (isAutomatic){
-    myLoop();
-  }
-};*/
-</script>
-
-
-
-<script> /* from w3c school 
-var x = document.getElementById("myDIV");
-if (x.addEventListener) {
-  x.addEventListener("mousemove", myFunction);
-} else if (x.attachEvent) {
-  x.attachEvent("onmousemove", myFunction);
+  var slider = new Slider(sliderParameters);
 }
 
-function myFunction() {
-  document.getElementById("demo").innerHTML = Math.random();
-}
-
-function removeHandler() {
-  if (x.removeEventListener) {
-    x.removeEventListener("mousemove", myFunction);
-  } else if (x.detachEvent) {
-    x.detachEvent("onmousemove", myFunction);
-  }
-}*/
 </script>
 
 </body>
