@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie-edge">
+<style>
+body{
+	
+}
+.slider-container{
+  display: flex;
+  flex-direction:row;
+  overflow-x: auto;
+  scroll-behavior:smooth; 
+}
+
+.slide .image{
+  flex-shrink:0;
+  max-width:200px;
+  display:block;
+  margin:10px;
+}
+
+</style>
+</head>
+<body>
+Demo: to try on a mobile phone or emulating a mobile phone on your browser. Swipe to make the images scroll horizontally.
+<div class="slider-container">
+<div id="slide1" class="slide"><img class="image" src="imagea.jpg"></div>
+<div id="slide2" class="slide"><img class="image" src="imageb.jpg"></div>
+<div id="slide3" class="slide"><img class="image" src="imagec.jpg"></div>
+<div id="slide4" class="slide"><img class="image" src="imaged.jpg"></div>
+</div>
+
+
+</body>

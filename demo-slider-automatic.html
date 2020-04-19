@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta http-equiv="X-UA-Compatible" content="ie-edge">
+<style>
+html {
+  /*scroll-behavior: smooth;*/
+}
+body{
+	
+}
+#overall-wrapper{
+  width:200px;
+}
+
+.slider-container{
+  display: flex;
+  flex-direction:row;
+  overflow-x: auto;
+  /*scroll-behavior:smooth; */
+  width: 200px;
+  overflow: hidden;
+}
+
+.slide .image{
+  flex-shrink:0;
+  max-width:200px;
+  display:block;
+}
+
+
+.navigation{
+
+text-decoration: none;
+    position: relative;
+    top: -152px;
+    z-index: 100;
+    width: 26px;
+    height: 24px;
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    margin: 10px;
+	cursor:pointer;
+	display:flex;
+	font-weight: 900;
+}
+}
+
+.navigation:hover{
+  color:lightgrey;
+}
+  
+.previous{
+  float:left;
+}
+#previous-button{
+  display:none;
+}
+.next{
+  float:right;
+}
+
+#bullet-points{
+  position: relative;
+  z-index: 100;
+  font-size:19px;
+  top: -46px;
+  margin-left:auto;
+  margin-right:auto;
+  width: 100px;
+}
+.active{
+  color:white;
+}
+ul{
+  overflow: hidden;/* to avoid messing up with the rest*/
+}
+li {
+  float: left;
+  width: 10px;
+  color:lightgrey;
+  margin-right: 5px;
+} 
+
+
+</style>
+</head>
+<body>
+On desktop: slides automatically every 3 seconds. On mobile: when you swip horizontally more than half of the picture, it goes automatically to the next slide. In both cases you can use the next and previous buttons.
+
+<div id="overall-wrapper">
+	<div id="slider-container" class="slider-container">
+		<div id="slide1" class="slide"><img class="image" src="imagea1.png"></div>
+		<div id="slide2" class="slide"><img class="image" src="imageb1.png"></div>
+		<div id="slide3" class="slide"><img class="image" src="imagec1.png"></div>
+		<div id="slide4" class="slide"><img class="image" src="imaged1.png"></div>
+	</div>
+	<div id="bullet-points">
+	  <ul>
+		<li id="bullet0" class="bullet active"></li>
+		<li id="bullet1" class="bullet"></li>
+		<li id="bullet2" class="bullet"></li>
+		<li id="bullet3" class="bullet"></li>
+	  </ul>	
+	</div>
+	<div id="navigation-container">
+	  <div id="previous-button" class="navigation previous"><</div>
+	  <div id="next-button" class="navigation next">></div>
+	</div>
+	<div id="test"></div>
+</div>
+
+<script type="text/javascript" src="slider.js"></script>
+
+<script>
+
+var sliderParameters = { 
+  isAutomatic: true,
+  numberOfSlides: 4,
+  slideWidth:200,
+  widthTriggeringMove:50,
+  maxWidthForAutomatic:1000,
+  sliderContainerId: "slider-container",
+  speedFactor:5,
+  movementTimeoutMilliseconds:30,
+  timeBetweenTwoAutomaticMoves:3000,
+  navigationParameters:{
+    nextButtonId: "next-button",
+    previousButtonId: "previous-button",
+    bulletIdPrefix: "bullet"
+  }
+};
+  
+/*
+  speedFactor:5,
+  movementTimeoutMilliseconds:30,
+ */
+
+
+
+onload = function(){
+  var slider = new Slider(sliderParameters);
+}
+
+</script>
+
+</body>
