@@ -1,0 +1,113 @@
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+<style>
+
+body{
+  margin:0px;
+  font-family:Nunito;
+}
+.search-wrapper{
+  margin:0px;
+  padding:0px;
+}	
+.result-header
+{
+  width:100%;
+  background:white;
+  margin:0px 0px 20px 0px;
+  height:20px;
+  padding:10px;
+  box-shadow: 0 0 10px #ddd;
+  border-bottom: 1px solid lightgray;
+}
+.highlight-term-searched{
+   color:#a33636;
+}
+.filters,.result-header{
+     font-size: 13px;
+}
+ .category-label{
+   font-weight:900;
+   margin-bottom: 5px;
+}
+.filters{
+  border-right:1px solid lightgrey;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-right:10px;
+  display: inline-block;
+  float:left;
+}
+.filters ul{
+  list-style-type:none;
+  padding-inline-start:0px;
+}
+
+.filters ul ul {
+    padding-inline-start:10px;
+}
+.filters li span {
+  position: relative;
+  left: 0px;
+
+}
+.result-content{
+  float:left;
+  width: 80%;
+  margin-left:20px;
+}
+
+
+/* inherited from main common css */
+table, th, td {
+    border: 1px solid grey;
+}
+td:first-child {
+    background-color: #f7f7f7c7;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+</style>
+
+</head>
+<body>
+<div class="search-wrapper">
+  <div class="result-header">Showing results 1-6 from 30 results for <span class="highlight-term-searched">"hello"</span></div>
+  <div class="filters">
+    <ul><div class="category-label">Category</div>
+	  <li><span>filter one</span></li>
+	  <ul>
+	    <li><span>subfilter one</span></li>
+		<li><span>subfilter two</span></li>
+		<li><span>subfilter three</span></li>
+	  </ul>
+	  <li><span>filter two</span></li>
+	  <ul>
+	    <li><span>subfilter one</span></li>
+		<li><span>subfilter two</span></li>
+		<li><span>ubfilter three</span></li>
+	  </ul>
+	</div>
+	<div class="result-content">
+	<table>
+	<tbody>
+      <tr><td>Get parameter from a post call, input name inputname</td><td>$_POST['inputname']</td></tr>
+	  <tr><td>Get parameter from a get call, input name inputname</td><td>$_GET['inputname']</td></tr>
+	 </tbody>
+	 </table>	
+    </div>
+</div>
+
+</body>
+</html>
