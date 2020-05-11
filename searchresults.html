@@ -32,7 +32,6 @@ body{
    margin-bottom: 5px;
 }
 .filters{
-  border-right:1px solid lightgrey;
   padding-right: 20px;
   padding-left: 20px;
   margin-right:10px;
@@ -54,7 +53,7 @@ body{
 }
 .result-content{
   float:left;
-  width: 80%;
+  max-width: 70%;
   margin-left:20px;
 }
 
@@ -77,37 +76,51 @@ table {
     table-layout: fixed;
     width: 100%;
 }
+em{
+    color: #a33636;
+}
 
 </style>
 
 </head>
+<script type="text/javascript" src="ajaxcall.js"></script>
+<script type="text/javascript" src="search.js"></script>
 <body>
 <div class="search-wrapper">
   <div class="result-header">Showing results 1-6 from 30 results for <span class="highlight-term-searched">"hello"</span></div>
-  <div class="filters">
-    <ul><div class="category-label">Category</div>
-	  <li><span>filter one</span></li>
-	  <ul>
-	    <li><span>subfilter one</span></li>
-		<li><span>subfilter two</span></li>
-		<li><span>subfilter three</span></li>
-	  </ul>
-	  <li><span>filter two</span></li>
-	  <ul>
-	    <li><span>subfilter one</span></li>
-		<li><span>subfilter two</span></li>
-		<li><span>ubfilter three</span></li>
-	  </ul>
-	</div>
-	<div class="result-content">
-	<table>
-	<tbody>
-      <tr><td>Get parameter from a post call, input name inputname</td><td>$_POST['inputname']</td></tr>
-	  <tr><td>Get parameter from a get call, input name inputname</td><td>$_GET['inputname']</td></tr>
-	 </tbody>
-	 </table>	
-    </div>
+  <div class="filters" id="filters">
+  </div>
+  <div class="result-content">
+    <div id="search-results"></div>
+  </div>
 </div>
 
 </body>
+
+<script>
+APIcallParameters={
+	method:"GET",
+	url:"https://www.vince.com:8000/vince/knowledge/search/?term="
+}
+
+function displayResultsFromAPICall(result,urlBaseForFilters)
+{
+	var displayer = new searchDisplayer(result,urlBaseForFilters,"search-results","filters");
+	displayer.readResultsBody();
+	displayer.readFilters();
+}
+
+
+var apiCaller = new APICaller(APIcallParameters,displayResultsFromAPICall);
+var launcher = new searchLauncher();
+var url = APIcallParameters.url + launcher.readURLPostFix(APIcallParameters);
+var urlBaseForFilters = launcher.getURLBaseForFilters();
+
+onload = function(){
+
+  apiCaller.executeCall(url,urlBaseForFilters);
+}
+</script>
+
+
 </html>
