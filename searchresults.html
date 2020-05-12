@@ -1,11 +1,31 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
 <style>
 
 body{
   margin:0px;
   font-family:Nunito;
+}
+
+
+.search-navigation
+{
+	background: #6b83da;
+    color: white;
+    width: 100px;
+    padding: 15px;
+    margin-top: 13px;
+    justify-content: center;
+	display:none;
+	cursor:pointer;
+}
+#previous-button{
+  float:left;
+}
+#next-button{
+  float:right;
 }
 .search-wrapper{
   margin:0px;
@@ -15,7 +35,6 @@ body{
 {
   width:100%;
   background:white;
-  margin:0px 0px 20px 0px;
   height:20px;
   padding:10px;
   box-shadow: 0 0 10px #ddd;
@@ -31,32 +50,95 @@ body{
    font-weight:900;
    margin-bottom: 5px;
 }
-.filters{
-  padding-right: 20px;
-  padding-left: 20px;
-  margin-right:10px;
-  display: inline-block;
-  float:left;
-}
-.filters ul{
-  list-style-type:none;
-  padding-inline-start:0px;
+
+@media screen and (min-width: 1000px){
+
+  .result-header
+  {
+    margin:0px 0px 20px 0px;
+  }
+
+	.filters{
+	  padding-left: 20px;
+	  display: block;
+	  width:220px;
+	  float:left;
+	}
+
+	.subcategory {
+		padding-left:10px;
+	}
+	
+	.result-content{
+	  float:left;
+	  max-width: 70%;
+	  margin-left:20px;
+	}
 }
 
-.filters ul ul {
-    padding-inline-start:10px;
-}
-.filters li span {
-  position: relative;
-  left: 0px;
+@media screen and (max-width: 999px){
+	  .result-header
+	  {
+		margin:0px 0px 10px 0px;
+	  }
+	  #category-wrapper
+	  {
+		display:none;
+	  }
+	  .category-label{
+		cursor:pointer;
+	  }
+	.filters{
+	  padding-left: 20px;
+	  display: block;
+	  width:100%;
+	  margin-bottom:10px;
+	  overflow: auto; /* have the div take full width of its children */
+	}
+	.category{
+		width:100%;
+		display:block;
+		clear:both;
+	}
+	.subcategory {
+		padding:5px;
+		display:block;
+		float:left;
+		margin:5px;
+		border:1px solid lightgray;
+		border-radius: 20px;
+	}
+	
+	.result-content{
+	  width:100%
+	}
+	
+	.caret.down {
+		border-top-color: grey;
+	}
+	.caret {
+    width: 0;
+		height: 0;
+		display: inline-block;
+		border: 4px solid transparent;
+		color: grey;
+		margin-left: 5px;
+	}
+	
+	.arrow-down{
+		transform: rotate(0deg);
+		transition: transform .2s ease;
+		margin-bottom: -3px;
+	}
+
+	.arrow-up{
+		transform: rotate(180deg);
+		transition: transform .2s ease;
+		margin-bottom: 1px;
+	
+	}		
 
 }
-.result-content{
-  float:left;
-  max-width: 70%;
-  margin-left:20px;
-}
-
 
 /* inherited from main common css */
 table, th, td {
@@ -87,11 +169,15 @@ em{
 <script type="text/javascript" src="search.js"></script>
 <body>
 <div class="search-wrapper">
-  <div class="result-header">Showing results 1-6 from 30 results for <span class="highlight-term-searched">"hello"</span></div>
+  <div class="result-header" id="result-header"></div>
   <div class="filters" id="filters">
   </div>
   <div class="result-content">
     <div id="search-results"></div>
+	<div id="search-navigation">
+	  <div id="previous-button" class="search-navigation">< Previous</div>
+	  <div id="next-button" class="search-navigation">Next ></div>
+	</div>
   </div>
 </div>
 
@@ -102,23 +188,36 @@ APIcallParameters={
 	method:"GET",
 	url:"https://www.vince.com:8000/vince/knowledge/search/?term="
 }
-
-function displayResultsFromAPICall(result,urlBaseForFilters)
+var isCategoryHidden = true;
+function unHideCategory()
 {
-	var displayer = new searchDisplayer(result,urlBaseForFilters,"search-results","filters");
+	if ( isCategoryHidden){
+		document.getElementById("category-wrapper").style.display = "block";
+		document.getElementById("arrow").className = "caret down arrow-up";
+		isCategoryHidden=false;
+	} else {
+		document.getElementById("category-wrapper").style.display = "none";
+		document.getElementById("arrow").className = "caret down arrow-down";
+		isCategoryHidden=true;
+	}
+}
+function displayResultsFromAPICall(result,urlDetails)
+{
+	var displayer = new searchDisplayer(result,urlDetails,"search-results","filters","result-header");
 	displayer.readResultsBody();
 	displayer.readFilters();
+	displayer.readHeaderInformation();
 }
 
 
 var apiCaller = new APICaller(APIcallParameters,displayResultsFromAPICall);
 var launcher = new searchLauncher();
 var url = APIcallParameters.url + launcher.readURLPostFix(APIcallParameters);
-var urlBaseForFilters = launcher.getURLBaseForFilters();
+var urlDetails = launcher.getDetailsFromURL();
 
 onload = function(){
 
-  apiCaller.executeCall(url,urlBaseForFilters);
+  apiCaller.executeCall(url,urlDetails);
 }
 </script>
 
