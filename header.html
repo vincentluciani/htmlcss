@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
 <style>
 body{
@@ -21,28 +22,14 @@ body{
   display:flex;
   flex-direction:column;
 }
-#logo{
-  margin-left:30px;
-  margin-top:12px;
-  width: 50px;
-}
-input{
-  height:40px;
-  width:500px;
-     -webkit-appearance: none; 
-    -moz-appearance: none; 
-	border-style: none;
-	padding-left:15px;
-	  font-family:Nunito;
-}
+
+
 #edit-box{
   margin-top: 11px;
-  margin-left: 91px;
   border-radius:10px;
 }
 button{
 	height: 40px;
-	width:85px;
     border-radius: 0px 8px 8px 0px;
     border-style: none;
 	background: #576cb6;
@@ -67,25 +54,8 @@ select,button{
   margin-top:11px;
   border: 3px solid transparent;
 }
-#social{
-	float:right;
-	margin-top:16px;
-	fill:white;
-	margin-left: auto;
-	width: 43px;
-	margin-right: 30px;
-}
-#social a,#social a:active,#social a:hover{
-	fill:white;
 
-}
-#menu{
-  display:flex;
-  flex-direction:row;
-  margin-left: 175px;
-  margin-top: 6px;
-  color:white;
-}
+
 .main-menu{
   font-size:14px;
   margin-right:30px;
@@ -94,18 +64,7 @@ select,button{
   color:#8fcbf6;
 }
 
-	.caret.down {
-		border-top-color: white;
-	}
-	.caret {
-    width: 0;
-		height: 0;
-		display: inline-block;
-		border: 4px solid transparent;
-		color: white;
-		margin-left: 5px;
-		margin-bottom: -3px;
-	}
+
 .sub_menu{
 padding: 6px;
     margin-top: 5px;
@@ -113,14 +72,154 @@ padding: 6px;
     border-bottom: 1px solid gray;
     border-right: 1px solid gray;
     border-left: 1px solid gray;
+	display:none;
 }
+
+select,button,input{
+  float:left;
+}
+
+#logo{
+	margin-top: 12px;
+}
+input{
+		height: 40px;
+		-webkit-appearance: none; 
+		-moz-appearance: none; 
+		border-style: none;
+		font-family:Nunito;
+}
+#menu{
+	display:flex;
+	flex-direction:row;
+	margin-top: 6px;
+	color:white;
+}
+.caret.down {
+	border-top-color: white;
+}
+.caret {
+    width: 0;
+	height: 0;
+	display: inline-block;
+	border: 4px solid transparent;
+	color: white;
+	margin-left: 5px;
+	margin-bottom: -3px;
+}
+@media screen and (min-width: 1000px){
+
+	#social{
+		float:right;
+		margin-top:16px;
+		fill:white;
+		margin-left: auto;
+		width: 43px;
+		margin-right: 30px;
+	}
+	#social a,#social a:active,#social a:hover{
+		fill:white;
+	}
+	select{
+		height: 40px;
+		background:aliceblue;
+	    border-style: none;
+		font-family:Nunito;
+		padding-left: 9px;
+	}
+
+	select,button{
+	  cursor:pointer;
+	}
 	
+	#logo{
+	  margin-left:30px;
+	  width: 50px;
+	}
+	
+	input{
+		height:40px;		width:500px;
+
+		padding-left:15px;
+
+	}
+	#menu{
+
+	  margin-left: 175px;
+
+	}
+	#edit-box{
+	  margin-left: 91px;
+	}
+	button{
+		width:85px;
+	}
+	.main-menu:hover .sub_menu{
+		display:block;
+	}  
+}
+@media screen and (max-width: 999px){
+	#social{
+		display:none;
+	}
+	select{
+		display:none;
+	}
+	
+	#logo {
+		margin-left: 10px;
+		width: 40px;
+	}
+	input {
+
+		width: 196px;
+		padding-left: 14px;
+
+	}
+	
+	#menu {
+		margin-left: 14px;
+	}
+	#edit-box{
+	  margin-left: 6px;
+	}
+	button{
+		width:56px;
+	}
+		.arrow-down{
+		transform: rotate(0deg);
+		transition: transform .2s ease;
+		margin-bottom: -3px;
+	}
+
+	.arrow-up{
+		transform: rotate(180deg);
+		transition: transform .2s ease;
+		margin-bottom: 1px;
+	
+	}
+
+}
+
 </style>
 
 </head>
 <body>
 <script>
+var searchURLPrefix="https://www.vince.com:8000/test/searchresults.html?term=";
 
+function launchSearch(){
+
+	var searchTerm = document.getElementById("mySearch").value;
+	var category = document.getElementById("category").value;
+	
+	var urlToLaunch=searchURLPrefix+searchTerm;
+	if (null!=category && category!="" && category!="All categories")
+	{
+		urlToLaunch+="&category="+category;
+	}
+	window.location.href = urlToLaunch;	
+}
 function onSelectEditBox(){
   document.getElementById("edit-box").style.border="3px solid #f47a93";
 
@@ -129,7 +228,25 @@ function deselectEditBox(){
 
 	  document.getElementById("edit-box").style.border="3px solid transparent";
 }
+var isCategoryHidden = true;
+function unHideCategory(parentElement)
+{
 
+	if (window.screen.width < 1000){
+		var subMenu =  parentElement.getElementsByClassName("sub_menu")[0];
+		var subCarret = parentElement.getElementsByClassName("caret")[0];
+
+		if ( isCategoryHidden){
+			subMenu.style.display = "block";
+			subCarret.className = "caret down arrow-up";
+			isCategoryHidden=false;
+		} else {
+			subMenu.style.display = "none";
+			subCarret.className = "caret down arrow-down";
+			isCategoryHidden=true;
+		}
+	}
+}
 </script>
 <div id="header-wrapper" ">
   <div id="upper-header">
@@ -139,13 +256,13 @@ function deselectEditBox(){
 	<div id="search-wrapper">
 	  <div id="edit-box">
 		<form>
-				<select name="category" onChange=””>
+				<select name="category" id="category" >
 				<option>All categories</option>
 				<option>SQL</option>
 				<option>PHP</option>
-				<input type="search" id="mySearch" placeholder="Search for something.." focus="true" onfocus="onSelectEditBox();"></input>
+				<input type="search" id="mySearch" placeholder="Search for something.." focus="true" onfocus="onSelectEditBox();" ></input>
 				</select>
-			<button type="button">Search</button>
+			<button type="button" onclick="launchSearch();">Search</button>
 		</form>
 	  </div>
 	</div>
@@ -153,14 +270,14 @@ function deselectEditBox(){
   </div>
   <div id="lower-header" onclick="deselectEditBox();">
     <div id="menu">
-		<div id="tutorials" class="main-menu">Tutorials<div class="caret down"></div>
+		<div id="tutorials" class="main-menu" onclick="unHideCategory(this);">Tutorials<div class="caret down"></div>
 		<div class="sub_menu">           
 		  <div class="sub-menu-item"><a href="" >SQL</div></a>          
 		  <div class="sub-menu-item"><a href="" >PHP</div></a>         
 		</div>	
 		</div>
-		<div id="github" class="main-menu">Github<div class="caret down"></div></div>
-		<div id="demos" class="main-menu">Demos<div class="caret down"></div></div>
+		<div id="github" class="main-menu" onclick="unHideCategory(this);">Github<div class="caret down"></div></div>
+		<div id="demos" class="main-menu" onclick="unHideCategory(this);">Demos<div class="caret down"></div></div>
 	</div>
   </div>
 </div>
