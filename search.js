@@ -10,28 +10,35 @@ function searchDisplayer(jsonObject,detailsFromURL,resultsDivId,filtersDivId,hea
 	{
 		var bodyHTML="<table><tbody>";
 		
-		for ( var i=0; i<jsonObject.items.length;i++)
-		{
-			var question=""
+		if ( null != jsonObject.items ){
 			
-			if ( null != jsonObject.items[i].highlight && null != jsonObject.items[i].highlight.question && jsonObject.items[i].highlight.question !="" )
+			for ( var i=0; i<jsonObject.items.length;i++)
 			{
-					question = jsonObject.items[i].highlight.question;
-			} else {
-					question = jsonObject.items[i].question;
+				var question=""
+				
+				if ( null != jsonObject.items[i].highlight && null != jsonObject.items[i].highlight.question && jsonObject.items[i].highlight.question !="" )
+				{
+						question = jsonObject.items[i].highlight.question;
+				} else {
+						question = jsonObject.items[i].question;
+				}
+				
+				if ( null != jsonObject.items[i].highlight && null != jsonObject.items[i].highlight.answer && jsonObject.items[i].highlight.answer !="" )
+				{
+						answer = jsonObject.items[i].highlight.answer;
+				} else {
+						answer = jsonObject.items[i].answer;
+				}
+				
+				bodyHTML+="<tr><td>"+question+"</td><td>"+answer+"</td></tr>";
 			}
-			
-			if ( null != jsonObject.items[i].highlight && null != jsonObject.items[i].highlight.answer && jsonObject.items[i].highlight.answer !="" )
-			{
-					answer = jsonObject.items[i].highlight.answer;
-			} else {
-					answer = jsonObject.items[i].answer;
-			}
-			
-			bodyHTML+="<tr><td>"+question+"</td><td>"+answer+"</td></tr>";
+			bodyHTML+="</tbody></table>";
 		}
-		
-		bodyHTML+="</tbody></table>";
+		else
+		{
+			bodyHTML="It is not you, it is me : I was seeking, I was striving, I was in it with all my heart, but I failed to find what you were looking for."
+		}
+
 		document.getElementById(resultsDivId).innerHTML = bodyHTML;
 		
 		
@@ -43,34 +50,42 @@ function searchDisplayer(jsonObject,detailsFromURL,resultsDivId,filtersDivId,hea
 		var filterBody="<div class='category-label' onClick='unHideCategory();'>Category<div id='arrow' class='caret down arrow-down'></div></div><div id='category-wrapper'>";
 		var numberOfSelectedSubcategories=0;
 		
-		for ( var i=0; i<this.jsonObject.details.aggregations.category.buckets.length;i++)
-		{
-			filterBody+="<div class='category'>"+this.jsonObject.details.aggregations.category.buckets[i].key+"</div>";
+		if ( null != jsonObject.details ){
 			
-			if ( null != this.jsonObject.details.aggregations.category.buckets[i].subCategory 
-				&& null!= this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets
-				&& this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets.length > 0)
-				{
-					/* filterBody+=""; */
-					for ( var j=0; j < this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets.length;j++)
+			for ( var i=0; i<this.jsonObject.details.aggregations.category.buckets.length;i++)
+			{
+				filterBody+="<div class='category'>"+this.jsonObject.details.aggregations.category.buckets[i].key+"</div>";
+				
+				if ( null != this.jsonObject.details.aggregations.category.buckets[i].subCategory 
+					&& null!= this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets
+					&& this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets.length > 0)
 					{
-						var link = this.detailsFromURL.baseForFilters+"&category="+this.jsonObject.details.aggregations.category.buckets[i].key+"&subCategory="+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].key;
-						filterBody+="<a href='"+link+"'><div class='subcategory'>"+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].key +" ("+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].doc_count+")</div></a>";
-						numberOfSelectedSubcategories++;
+						/* filterBody+=""; */
+						for ( var j=0; j < this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets.length;j++)
+						{
+							var link = this.detailsFromURL.baseForFilters+"&category="+this.jsonObject.details.aggregations.category.buckets[i].key+"&subCategory="+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].key;
+							filterBody+="<a href='"+link+"'><div class='subcategory'>"+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].key +" ("+this.jsonObject.details.aggregations.category.buckets[i].subCategory.buckets[j].doc_count+")</div></a>";
+							numberOfSelectedSubcategories++;
+						}
+						/*filterBody+=";*/
 					}
-					/*filterBody+=";*/
-				}
-		}
-		var resettedLink = this.detailsFromURL.baseForFilters;
+			}
+			
+			var resettedLink = this.detailsFromURL.baseForFilters;
 		
-		if ( detailsFromURL.category != null && detailsFromURL.category != "" && detailsFromURL.subCategory != null && detailsFromURL.subCategory != "" )
-		{
-			filterBody+="<br><a href='"+resettedLink+"'><div class='category'>< All Categories</div></a></div>";
+			if ( detailsFromURL.category != null && detailsFromURL.category != "" && detailsFromURL.subCategory != null && detailsFromURL.subCategory != "" )
+			{
+				filterBody+="<br><a href='"+resettedLink+"'><div class='category'>< All Categories</div></a></div>";
+			}
+			else
+			{
+				filterBody+="</div>";
+			}
 		}
-		else
-		{
-			filterBody+="</div>";
+		else{
+			filterBody="";
 		}
+
 		document.getElementById(filtersDivId).innerHTML = filterBody;
 
 
@@ -78,30 +93,36 @@ function searchDisplayer(jsonObject,detailsFromURL,resultsDivId,filtersDivId,hea
 	
 	this.readHeaderInformation= function()
 	{
-		var numberOfHits = this.jsonObject.details.totalHits;
-		var termSearched = this.detailsFromURL.termSearched;
-		var offset = this.detailsFromURL.offSetNumber;
-		var pageSize = this.detailsFromURL.pageSizeNumber;
 		
-		var firstResultNumber = (offset + 1).toString();
-		var lastResultNumber= (offset + pageSize).toString();
-	
-		if ( offset >= pageSize )
-		{
-			document.getElementById("previous-button").addEventListener("click", previousPage);
-			document.getElementById("previous-button").style.display = "flex";
-		} 
+		if ( null != jsonObject.details ){
+			var numberOfHits = this.jsonObject.details.totalHits;
+			var termSearched = this.detailsFromURL.termSearched;
+			var offset = this.detailsFromURL.offSetNumber;
+			var pageSize = this.detailsFromURL.pageSizeNumber;
+			
+			var firstResultNumber = (offset + 1).toString();
+			var lastResultNumber= (offset + pageSize).toString();
 		
-		if ( (offset+pageSize) <  parseInt(numberOfHits,10) )
-		{
-		  	document.getElementById("next-button").addEventListener("click", nextPage);
-			document.getElementById("next-button").style.display = "flex";
-		} else {
-			lastResultNumber= numberOfHits;
+			if ( offset >= pageSize )
+			{
+				document.getElementById("previous-button").addEventListener("click", previousPage);
+				document.getElementById("previous-button").style.display = "flex";
+			} 
+			
+			if ( (offset+pageSize) <  parseInt(numberOfHits,10) )
+			{
+				document.getElementById("next-button").addEventListener("click", nextPage);
+				document.getElementById("next-button").style.display = "flex";
+			} else {
+				lastResultNumber= numberOfHits;
+			}
+			
+			var informationText = "Showing results "+firstResultNumber+"-"+lastResultNumber+" from "+numberOfHits+ " results for <span class='highlight-term-searched'>"+termSearched+"</span>";
 		}
-		
-		var informationText = "Showing results "+firstResultNumber+"-"+lastResultNumber+" from "+numberOfHits+ " results for <span class='highlight-term-searched'>"+termSearched+"</span>";
-		
+		else {
+		   var informationText ="";
+			
+		}
 		document.getElementById(headerDivId).innerHTML = informationText;
 	}
 	

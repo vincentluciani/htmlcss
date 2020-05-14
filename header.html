@@ -73,6 +73,7 @@ padding: 6px;
     border-right: 1px solid gray;
     border-left: 1px solid gray;
 	display:none;
+	position:absolute;
 }
 
 select,button,input{
@@ -94,6 +95,7 @@ input{
 	flex-direction:row;
 	margin-top: 6px;
 	color:white;
+	height:100%;
 }
 .caret.down {
 	border-top-color: white;
@@ -271,13 +273,23 @@ function unHideCategory(parentElement)
   <div id="lower-header" onclick="deselectEditBox();">
     <div id="menu">
 		<div id="tutorials" class="main-menu" onclick="unHideCategory(this);">Tutorials<div class="caret down"></div>
-		<div class="sub_menu">           
-		  <div class="sub-menu-item"><a href="" >SQL</div></a>          
-		  <div class="sub-menu-item"><a href="" >PHP</div></a>         
-		</div>	
+			<div class="sub_menu">           
+			  <div class="sub-menu-item"><a href="" >SQL</div></a>          
+			  <div class="sub-menu-item"><a href="" >PHP</div></a>         
+			</div>	
 		</div>
-		<div id="github" class="main-menu" onclick="unHideCategory(this);">Github<div class="caret down"></div></div>
-		<div id="demos" class="main-menu" onclick="unHideCategory(this);">Demos<div class="caret down"></div></div>
+		<div id="github" class="main-menu" onclick="unHideCategory(this);">Github<div class="caret down"></div>
+			<div class="sub_menu">           
+			  <div class="sub-menu-item"><a href="" >Node.js elastic</div></a>          
+			  <div class="sub-menu-item"><a href="" >Data collector</div></a>         
+			</div>
+		</div>
+		<div id="demos" class="main-menu" onclick="unHideCategory(this);">Demos<div class="caret down"></div>
+			<div class="sub_menu">           
+			   <div class="sub-menu-item"><a href="" >Brainstrive</div></a>          
+			   <div class="sub-menu-item"><a href="" ></div></a>         
+			</div>
+		</div>
 	</div>
   </div>
 </div>
