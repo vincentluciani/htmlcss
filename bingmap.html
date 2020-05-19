@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>loadmapasyncHTML</title>
+        <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key='></script>
+        <script type='text/javascript'>
+                var map;
+			
+/*https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/pushpindragevents*/
+				
+                function loadMapScenario() {
+                     var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                    /* No need to set credentials if already passed in URL */
+                    center: new Microsoft.Maps.Location(20.593683, 78.962883),
+                    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                    zoom: 5
+					});
+					
+					
+					Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
+					var searchManager = new Microsoft.Maps.Search.SearchManager(map);
+					var requestOptions = {
+						bounds: map.getBounds(),
+						where: 'Mumbai',
+						callback: function (answer, userData) {
+							map.setView({ bounds: answer.results[0].bestView });
+						}
+					};
+					searchManager.geocode(requestOptions);
+				});
+
+
+
+					 var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), { color: 'red' });
+                map.entities.push(pushpin);
+				
+				var pushpin2 = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(19.101161,72.891418), { color: 'green' });
+                map.entities.push(pushpin2);
+				
+				var pushpin3 = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(19.058008,72.826945), {
+                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"><circle cx="25" cy="25" r="20" stroke="orange" stroke-width="4" fill="yellow" /></svg>',
+                    anchor: new Microsoft.Maps.Point(25, 25)
+                });
+                map.entities.push(pushpin3);
+				
+				
+				
+				//Create a white circle that has a 35 pixel radius and a black outline as a pushpin and add to map.
+                var pushpin4 = createCirclePushpin(new Microsoft.Maps.Location(19.116084,72.850265), 35, 'rgba(255, 255, 255, 0.8)', 'black', 1);
+                map.entities.push(pushpin4);
+				
+		 
+				var infoboxTemplate = '<div id="infoboxText" style="background-color:White; border-style:solid; border-width:medium; border-color:DarkOrange; min-height:100px; width: 240px;">' +
+                    '<b id="infoboxTitle" style="position: absolute; top: 10px; left: 10px; width: 220px;">{title}</b>' +
+                    '<a id="infoboxDescription" style="position: absolute; top: 30px; left: 10px; width: 220px;">{description}</a></div>';
+                var infobox = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(19.101161,72.918853), { htmlContent: infoboxTemplate.replace('{title}', 'myTitle').replace('{description}', 'myDescription') });
+				infobox.setOptions({ visible: false })
+                infobox.setMap(map);
+				
+				Microsoft.Maps.Events.addHandler(pushpin, 'click', function () {
+                    infobox.setOptions({ visible: true });
+					});
+				
+                function createCirclePushpin(location, radius, fillColor, strokeColor, strokeWidth)
+				{
+                    if (strokeColor === void 0) { strokeColor = ""; }
+                    if (strokeWidth === void 0) { strokeWidth = 0; }
+                    //Create an SVG string of a circle with the specified radius and color.
+                    var svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + 2 * radius + "\" height=\"" + 2 * radius + "\">\n        <circle cx=\"" + radius + "\" cy=\"" + radius + "\" r=\"" + (radius - strokeWidth) + "\" stroke=\"" + strokeColor + "\" stroke-width=\"" + strokeWidth + "\" fill=\"" + fillColor + "\"/><text x='50%' y='50%' text-anchor='middle' stroke='#51c5cf' stroke-width='2px' dy='.3em'>1</text></svg> ";
+                    //Create a pushpin from the SVG and anchor it to the center of the circle.
+                    return new Microsoft.Maps.Pushpin(location, { icon: svg, anchor: new Microsoft.Maps.Point(radius, radius) });
+				}
+	  
+	  
+				Microsoft.Maps.Events.addHandler(map, 'click', function (e) {
+					if (e.targetType == "map") {
+					  var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+					  var loc = e.target.tryPixelToLocation(point);
+					  var location = new Microsoft.Maps.Location(loc.latitude, loc.longitude);
+					}
+
+					var pushpin = new Microsoft.Maps.Pushpin(location, {
+							'draggable': true
+					});
+					map.entities.push(pushpin);
+				});
+
+	  
+                }
+                
+            
+        </script>
+    </head>
+    <body onload='loadMapScenario();'>
+        <div id='printoutPanel'></div>
+        
+        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+    </body>
+</html>

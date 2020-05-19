@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>loadmapasyncHTML</title>
+        <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}
+		#searchPanel{
+		/* z-index: 100; */
+		/* position: absolute; */
+		top: 179px;
+		/* width: 265px; */
+		/* opacity: 0.5; */
+		background: aliceblue;
+		padding: 20px;
+		/* border-radius: 30px; */
+		left: 121px;
+		}
+	</style>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key='></script>
+        <script type='text/javascript'>
+                var map;
+				var pins=[];
+			
+/*https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/pushpindragevents*/
+				
+                function loadMapScenario() {
+				
+				
+                    map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                    /* No need to set credentials if already passed in URL */
+                    center: new Microsoft.Maps.Location(20.593683, 78.962883),
+                    zoom: 5
+					});
+					
+					Microsoft.Maps.Events.addHandler(map, 'click', function (e) {
+						if (e.targetType == "map") {
+					
+						  var point = new Microsoft.Maps.Point(e.getX(), e.getY());
+						  var loc = e.target.tryPixelToLocation(point);
+						  var location = new Microsoft.Maps.Location(loc.latitude, loc.longitude);
+						  
+						  document.getElementById("latitude").innerHTML = loc.latitude;
+						  document.getElementById("longitude").innerHTML = loc.longitude;
+						}
+
+						var pushpin = new Microsoft.Maps.Pushpin(location, {
+								'draggable': true
+						});
+						
+						for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+							if (pushpin instanceof Microsoft.Maps.Pushpin) {
+								map.entities.removeAt(i);
+								break
+							}
+						}
+		
+						map.entities.push(pushpin);
+						pins[0]=pushpin;
+						
+						Microsoft.Maps.Events.addHandler(pins[0], 'dragend', function (e) {
+							if (e.targetType == "pushpin") {
+						
+							  var pushPinLocation = pins[0].getLocation()
+							  var location = new Microsoft.Maps.Location(pushPinLocation.latitude, pushPinLocation.longitude);
+							  
+							  document.getElementById("latitude").innerHTML = pushPinLocation.latitude;
+							  document.getElementById("longitude").innerHTML = pushPinLocation.longitude;
+							}
+
+							var pushpin = new Microsoft.Maps.Pushpin(location, {
+									'draggable': true
+							});
+							
+							for (var i = map.entities.getLength() - 1; i >= 0; i--) {
+								if (pushpin instanceof Microsoft.Maps.Pushpin) {
+									map.entities.removeAt(i);
+									break
+								}
+							}
+			
+							map.entities.push(pushpin);
+							pins[0]=pushpin;
+						});
+					});
+				
+					
+					
+				};
+
+				function goToLocation(){
+				
+					var targetLocation = document.getElementById("location").value;
+					
+					Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () 
+					{
+						var searchManager = new Microsoft.Maps.Search.SearchManager(map);
+						var requestOptions = {
+							bounds: map.getBounds(),
+							where: targetLocation,
+							callback: function (answer, userData) {
+								map.setView({ bounds: answer.results[0].bestView ,zoom: 14});
+							}
+						};
+						searchManager.geocode(requestOptions);
+					});
+				
+				
+				}
+				
+	  
+				
+
+	 
+				
+                
+            
+        </script>
+    </head>
+    <body onload='loadMapScenario();'>
+        <div id='printoutPanel'></div>
+        <div id='searchPanel'>
+			<input id='location'></input>
+			<button id='searchbutton' onclick='goToLocation();'>Search</button>
+			<div id="latitude">latitude</div>
+			<div id="longitude">longitude</div>
+		</div>
+        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+    </body>
+</html>
