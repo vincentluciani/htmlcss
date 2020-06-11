@@ -4,7 +4,7 @@
         <title>loadmapasyncHTML</title>
         <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
         <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key='></script>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=ArjH6hsrFc8bwDmpSPHaAnGee_agl3IArWTlBa-kJug351S0Yn8sVxp6ziQZJTu_'  async defer></script>
         <script type='text/javascript'>
 		
 				var entities = [
@@ -14,8 +14,8 @@
 				
 				
                 var map;
-			
-/*https://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk/pushpindragevents*/
+				
+				/*https://blogs.bing.com/maps/2011/09/16/dev-tip-repositioning-an-infobox*/
 				
                 function loadMapScenario()
 				{
@@ -23,7 +23,7 @@
                     /* No need to set credentials if already passed in URL */
                     center: new Microsoft.Maps.Location(13.079454766739488, 80.27396726358273),
                     mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-                    zoom: 13
+                    zoom: 4/*13*/
 					});
 					
 				var pushpins=[];	
@@ -37,39 +37,49 @@
 				//Assign the infobox to a map instance.
 				infobox.setMap(map);
 
-				var infoboxTemplate = '<div id="infoboxText" style="background-color:White; border-style:solid; border-width:medium; border-color:DarkOrange; min-height:100px; width: 240px;margin-top:140px;margin-left:-100px;">' +
+				var infoboxTemplate = '<div id="infoboxText" style="background-color:White; border-style:solid; border-width:medium; border-color:lightgrey; padding:5px;min-height:100px; width: 240px;margin-top:{marginTop}px;margin-left:{marginLeft}px;">' +
 									'<div id="infoboxTitle" style="">{title}</b>' +
 									'<div id="infoboxDescription" style="">{description}</a></div>';
 									
-				
+				/*Microsoft.Maps.Events.addHandler(map, 'viewchangeend', reactToMapMove);*/
 
-				for ( var i=0; i<entities.length ; i++)
-				{
-					pushpins[i] = createCirclePushpin(new Microsoft.Maps.Location(entities[i].position.latitude,entities[i].position.longitude), 25, 'rgba(255, 255, 255, 0.8)', entities[i].color, 2,'black',i,entities[i].name,entities[i].description);
-					map.entities.push(pushpins[i]);
-					
-						pushpins[i].metadata = {
-						title: entities[i].name,
-						description: entities[i].description
-					};
-					/*
-					infoBoxes[i] = new Microsoft.Maps.Infobox(new Microsoft.Maps.Location(entities[i].position.latitude,entities[i].position.longitude), { htmlContent: infoboxTemplate.replace('{title}', 'myTitle').replace('{description}', 'myDescription') });
-					infoBoxes[i].setOptions({ visible: false });
-					infoBoxes[i].setMap(map);*/
+
 				
-				Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseover', showInfoBox);
-				Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseout', hideInfoBox);
-				}
+				//Create a ClusterLayer with options and add it to the map.
+				Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
+				
+					for ( var i=0; i<entities.length ; i++)
+					{
+							/*pushpins[i] = createCirclePushpin(new Microsoft.Maps.Location(entities[i].position.latitude,entities[i].position.longitude), 25, 'rgba(255, 255, 255, 0.8)', entities[i].color, 2,'black',i,entities[i].name,entities[i].description);*/
+							pushpins[i] = createRegularPushpin(new Microsoft.Maps.Location(entities[i].position.latitude,entities[i].position.longitude),i,entities[i].name,entities[i].description);
+							/*map.entities.push(pushpins[i]);*/
+							
+								pushpins[i].metadata = {
+								title: entities[i].name,
+								description: entities[i].description
+							};
+
+						
+						Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseover', showInfoBox);
+						Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseout', hideInfoBox);
+
+					}
+					var clusterLayer = new Microsoft.Maps.ClusterLayer(pushpins);
+					map.layers.insert(clusterLayer);
+				});
 				
 				function showInfoBox(e) {
 					//Make sure the infobox has metadata to display.
 					if (e.target.metadata) {
+					
+						var margins=checkInfoBoxPosition(e.target);
+					
 						//Set the infobox options with the metadata of the pushpin.
 						infobox.setOptions({
 							location: e.target.getLocation(),
 							title: e.target.metadata.title,
 							description: e.target.metadata.description,
-							htmlContent: infoboxTemplate.replace('{title}',  e.target.metadata.title).replace('{description}', e.target.metadata.description),
+							htmlContent: infoboxTemplate.replace('{title}',  e.target.metadata.title).replace('{description}', e.target.metadata.description).replace('{marginTop}',margins.marginTop).replace('{marginLeft}',margins.marginLeft),
 							visible: true
 						});
 					}
@@ -96,9 +106,47 @@
 					subTitle: description, });
 				}
 	  
+				function createRegularPushpin(location,id,name,description)
+				{
+					
+					return new Microsoft.Maps.Pushpin(location, {
+						title: name,
+						subTitle: description,
+						text: '1'
+					});
+				}
 	  
-			
-	  
+				function checkInfoBoxPosition(pushpin){
+					
+					var margins={marginTop:"150",marginLeft:"-110"};
+					var mapWidth = map.getWidth();
+					var mapHeight = map.getHeight();
+					var ymargin = 147;
+					var xmargin = 120;
+                 
+/* 0,0 is top left */
+                  var pushpinLocation = map.tryLocationToPixel(pushpin.getLocation(), Microsoft.Maps.PixelReference.control);
+				  var infoBoxBottom = pushpinLocation.y + ymargin;
+				  var infoBoxRight = pushpinLocation.x + xmargin;
+				  var infoBoxLeft = pushpinLocation.x - xmargin;
+
+				 document.getElementById("test").innerHTML = "map width:"+mapWidth + " Map Height" +mapHeight+" Pin location:"+ pushpinLocation + "<br>Infobox bottom:"+infoBoxBottom+" Info box left"+infoBoxLeft+" Info box right"+infoBoxRight;
+
+					if ( infoBoxBottom > mapHeight )
+					{
+						margins.marginTop = "-30";
+					}
+					if ( infoBoxLeft < 0 ) 
+					{
+						margins.marginLeft = "-10";
+					}
+					if ( infoBoxRight > mapWidth )
+					{
+						margins.marginLeft = "-220";
+					}
+					
+					return margins;
+				}
                 }
                 
 			
@@ -108,6 +156,10 @@
     <body onload='loadMapScenario();'>
         <div id='printoutPanel'></div>
         
-        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+        <div id='myMap' style='width: 100vw; height: 80vh;'></div>
+		
+		        <div id='test' style='width: 100%; height: 200px; background:white'>test
+				</div>
+				
     </body>
 </html>
