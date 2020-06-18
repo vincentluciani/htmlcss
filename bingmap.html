@@ -4,7 +4,7 @@
         <title>loadmapasyncHTML</title>
         <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
         <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=ArjH6hsrFc8bwDmpSPHaAnGee_agl3IArWTlBa-kJug351S0Yn8sVxp6ziQZJTu_'  async defer></script>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key='  async defer></script>
         <script type='text/javascript'>
 		
 				var entities = [
@@ -14,6 +14,7 @@
 				
 				
                 var map;
+				var zoomValue=4;
 				
 				/*https://blogs.bing.com/maps/2011/09/16/dev-tip-repositioning-an-infobox*/
 				
@@ -23,7 +24,7 @@
                     /* No need to set credentials if already passed in URL */
                     center: new Microsoft.Maps.Location(13.079454766739488, 80.27396726358273),
                     mapTypeId: Microsoft.Maps.MapTypeId.aerial,
-                    zoom: 4/*13*/
+                    zoom: zoomValue/*13*/
 					});
 					
 				var pushpins=[];	
@@ -59,7 +60,7 @@
 								description: entities[i].description
 							};
 
-						
+						Microsoft.Maps.Events.addHandler(pushpins[i], 'click', zoomIn);
 						Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseover', showInfoBox);
 						Microsoft.Maps.Events.addHandler(pushpins[i], 'mouseout', hideInfoBox);
 
@@ -76,6 +77,13 @@
 										/*	customizeClusterPresentation();*/
 					map.layers.insert(clusterLayer);
 				});
+				
+				function zoomIn(){
+					 var pushpinLocation = e.target.getLocation();
+					var newCenter = pushpinLocation;
+					var zoomValue=map.getZoom()+4;
+					map.setView({ zoom:zoomValue,center:newCenter });
+				}
 
 				function showInfoBox(e) {
 					//Make sure the infobox has metadata to display.

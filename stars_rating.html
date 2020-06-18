@@ -1,0 +1,60 @@
+<html>
+<head>
+<style>
+#star-wrapper{
+display:flex;
+flex-direction:row;
+}
+.star{
+color:lightgrey;
+font-size:20px;
+}
+.highlight{
+color:#e3e336;
+}
+</style>
+</head>
+<body>
+<div id="star-wrapper">
+<div id="star-1" class="star">★</div><div id="star-2" class="star">★</div><div id="star-3" class="star">★</div><div id="star-4" class="star">★</div><div id="star-5" class="star">★</div>
+</div>
+<div id="test"></div>
+<script>
+for (var i=1;i<=5;i++){
+	var buttonId="star-"+i.toString();
+	document.getElementById(buttonId).addEventListener("click", setRating);
+	document.getElementById(buttonId).newScore=i;
+}
+
+function setRating(event){
+	var score = event.currentTarget.newScore;
+	document.getElementById("test").innerHTML = score;
+	
+	var previousScore=0;
+	
+	for (var i=1;i<=5;i++){
+		
+	  	var buttonId="star-"+i.toString();
+		var isStarChecked = document.getElementById(buttonId).classList.contains("highlight");
+		
+		if (isStarChecked){
+			previousScore=i;
+		}
+		document.getElementById(buttonId).classList.remove("highlight");
+	}
+	
+
+		
+	if (score!=previousScore) {
+		for (var i=1;i<=score;i++){
+			var buttonId="star-"+i.toString();
+			document.getElementById(buttonId).classList.add("highlight");
+		}
+	} else {
+		document.getElementById("test").innerHTML = "";
+	}
+}
+
+</script>
+</body>
+</html>

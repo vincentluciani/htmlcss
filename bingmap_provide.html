@@ -16,7 +16,7 @@
 		}
 	</style>
         <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=ArjH6hsrFc8bwDmpSPHaAnGee_agl3IArWTlBa-kJug351S0Yn8sVxp6ziQZJTu_'></script>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key='></script>
         <script type='text/javascript'>
                 var map;
 				var pins=[];
@@ -61,7 +61,14 @@ https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/au
 						map.entities.push(pushpin);
 						pins[0]=pushpin;
 						
-						Microsoft.Maps.Events.addHandler(pins[0], 'dragend', function (e) {
+						Microsoft.Maps.Events.addHandler(pins[0], 'dragend', reactOnPinDrag);
+					});
+				
+					
+					
+				};
+
+				function reactOnPinDrag(e) {
 							if (e.targetType == "pushpin") {
 						
 							  var pushPinLocation = pins[0].getLocation()
@@ -84,13 +91,9 @@ https://docs.microsoft.com/en-us/bingmaps/v8-web-control/map-control-concepts/au
 			
 							map.entities.push(pushpin);
 							pins[0]=pushpin;
-						});
-					});
-				
-					
-					
-				};
-
+							Microsoft.Maps.Events.addHandler(pins[0], 'dragend', reactOnPinDrag);
+						}
+						
 				function goToLocation(){
 				
 					var targetLocation = document.getElementById("location").value;
