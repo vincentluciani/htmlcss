@@ -1,0 +1,126 @@
+<html>
+<head>
+<style>
+#date-picker,.line{
+	display:flex;
+	flex-direction:row;
+}
+.hours-in-day,.calendar-wrapper{
+	display:flex;
+	flex-direction:column;
+}
+.date-list,.nav
+{
+  padding:10px;
+}
+.hour
+{
+  padding-right:10px;
+}
+.line{
+  padding-left:37px;
+}
+.nav{
+  cursor:pointer;
+}
+ 
+</style>
+</head>
+
+<body>
+<div class="calendar-wrapper">
+  <div id="date-picker">
+    <div id="previous" class="nav left" onClick="previous();"><</div>
+	<div class="date-list" id="day-1"></div>
+  	<div class="date-list"id="day-2"></div>
+	<div class="date-list"id="day-3"></div>
+	<div class="date-list"id="day-4"></div>
+	<div id="next" class="nav left" onClick="next()";>></div>
+  </div>
+  <div id="hours-in-day">
+    <div class="line"><div class="hour">10:00</div><div class="hour">10:00</div><div class="hour">10:00</div><div class="hour">10:00</div></div>
+    <div class="line"><div class="hour">11:00</div><div class="hour">11:00</div><div class="hour">11:00</div><div class="hour">11:00</div></div>
+    <div class="line"><div class="hour">12:00</div><div class="hour">12:00</div><div class="hour">12:00</div><div class="hour">13:00</div></div>
+    <div class="line"><div class="hour">13:00</div><div class="hour">13:00</div><div class="hour">13:00</div><div class="hour">13:00</div></div>
+  </div>
+</div>
+<script>
+
+function getDayMonthSeries(firstDate,numberOfDates)
+{
+	var month=new Array();
+	var datesDayMonth=Array();
+	
+	month[0]="Jan";
+	month[1]="Feb";
+	month[2]="Mar";
+	month[3]="Apr";
+	month[4]="May";
+	month[5]="Jun";
+	month[6]="Jul";
+	month[7]="Aug";
+	month[8]="Sept";
+	month[9]="Oct";
+	month[10]="Nov";
+	month[11]="Dec";
+
+	var tempDates=new Array();
+	
+	tempDates[0]=firstDate;
+	var theMonth = tempDates[0].getMonth();
+	var monthShortCut = month[theMonth];
+	var theDay = tempDates[0].getDate();
+	datesDayMonth[0] = theDay + " " + monthShortCut;
+	
+	for ( var i=1; i< numberOfDates ;i++)
+	{
+		tempDates[i]= new Date();
+		tempDates[i].setDate(tempDates[i-1].getDate() + 1);
+		var theMonth = tempDates[i].getMonth();
+		var monthShortCut = month[theMonth];
+		var theDay = tempDates[i].getDate();
+		datesDayMonth[i] = theDay + " " + monthShortCut;
+	}
+	return datesDayMonth;
+
+}
+
+function previous()
+{
+	var tempDate= new Date();
+	tempDate.setDate(currentDate.getDate() - 4);
+	var datesDayMonth = getDayMonthSeries(tempDate,4);
+	displayDayMonth(datesDayMonth);
+	currentDate=tempDate;
+
+}
+
+function next()
+{
+	var tempDate= new Date();
+	tempDate.setDate(currentDate.getDate() + 4);
+	var datesDayMonth = getDayMonthSeries(tempDate,4);
+	displayDayMonth(datesDayMonth);
+	currentDate=tempDate;
+}
+
+var currentDate;
+
+
+var displayDayMonth = function(datesDayMonth)
+{
+	document.getElementById("day-1").innerHTML = datesDayMonth[0];
+	document.getElementById("day-2").innerHTML = datesDayMonth[1];
+	document.getElementById("day-3").innerHTML = datesDayMonth[2];
+	document.getElementById("day-4").innerHTML = datesDayMonth[3];
+}
+onload = function(){
+
+	currentDate=new Date();
+	var datesDayMonth = getDayMonthSeries(new Date(),4);
+	displayDayMonth(datesDayMonth);
+}
+
+</script>
+
+</body>
