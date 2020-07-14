@@ -1,22 +1,38 @@
 <html>
 <head>
 <style>
-#date-picker,.line{
-	display:flex;
-	flex-direction:row;
+.reserved
+{
+
+
 }
-.hours-in-day,.calendar-wrapper{
+.not-available
+{
+
+}
+.available{
+
+
+}
+.your-reservation
+{
+
+
+}
+.column
+{
 	display:flex;
 	flex-direction:column;
 }
-.date-list,.nav
-{
-  padding:10px;
+.calendar-wrapper,#hours-in-day{
+	display:flex;
+	flex-direction:row;
 }
-.hour
+.date-list,.nav,.hour
 {
-  padding-right:10px;
+  padding:15px;
 }
+
 .line{
   padding-left:37px;
 }
@@ -29,20 +45,22 @@
 
 <body>
 <div class="calendar-wrapper">
-  <div id="date-picker">
-    <div id="previous" class="nav left" onClick="previous();"><</div>
-	<div class="date-list" id="day-1"></div>
-  	<div class="date-list"id="day-2"></div>
-	<div class="date-list"id="day-3"></div>
-	<div class="date-list"id="day-4"></div>
-	<div id="next" class="nav left" onClick="next()";>></div>
-  </div>
+  <div id="previous" class="nav left" onClick="previous();"><</div>
   <div id="hours-in-day">
-    <div class="line"><div class="hour">10:00</div><div class="hour">10:00</div><div class="hour">10:00</div><div class="hour">10:00</div></div>
-    <div class="line"><div class="hour">11:00</div><div class="hour">11:00</div><div class="hour">11:00</div><div class="hour">11:00</div></div>
-    <div class="line"><div class="hour">12:00</div><div class="hour">12:00</div><div class="hour">12:00</div><div class="hour">13:00</div></div>
-    <div class="line"><div class="hour">13:00</div><div class="hour">13:00</div><div class="hour">13:00</div><div class="hour">13:00</div></div>
-  </div>
+	<div class="column">
+	  <div class="date-list" id="day-1"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	</div>
+  	<div class="column">
+		<div class="date-list" id="day-2"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	</div>
+	<div class="column">
+	  <div class="date-list" id="day-3"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	</div>
+	<div class="column">
+	  <div class="date-list" id="day-4"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	</div>
+   </div>
+  <div id="next" class="nav left" onClick="next()";>></div>
 </div>
 <script>
 
