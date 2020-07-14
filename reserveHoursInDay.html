@@ -3,20 +3,20 @@
 <style>
 .reserved
 {
-
+	color:red;
 
 }
-.not-available
+.hour
 {
-
+	color:white;
 }
 .available{
-
+	color:green;
 
 }
 .your-reservation
 {
-
+	border:1px solid aliceblue;
 
 }
 .column
@@ -48,26 +48,38 @@
   <div id="previous" class="nav left" onClick="previous();"><</div>
   <div id="hours-in-day">
 	<div class="column">
-	  <div class="date-list" id="day-1"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	  <div class="date-list" id="day-0"></div><div id="day-0-hour-10" class="hour">10:00</div><div id="day-0-hour-11" class="hour">11:00</div><div id="day-0-hour-12" class="hour">12:00</div><div id="day-0-hour-13" class="hour">13:00</div>
 	</div>
   	<div class="column">
-		<div class="date-list" id="day-2"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+		<div class="date-list" id="day-1"></div><div id="day-1-hour-10" class="hour">10:00</div><div id="day-1-hour-11" class="hour">11:00</div><div id="day-1-hour-12" class="hour">12:00</div><div id="day-1-hour-13" class="hour">13:00</div>
 	</div>
 	<div class="column">
-	  <div class="date-list" id="day-3"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	  <div class="date-list" id="day-2"></div><div id="day-2-hour-10" class="hour">10:00</div><div id="day-2-hour-11" class="hour">11:00</div><div id="day-2-hour-12" class="hour">12:00</div><div id="day-2-hour-13" class="hour">13:00</div>
 	</div>
 	<div class="column">
-	  <div class="date-list" id="day-4"></div><div class="hour">10:00</div><div class="hour">11:00</div><div class="hour">12:00</div><div class="hour">13:00</div>
+	  <div class="date-list" id="day-3"></div><div id="day-3-hour-10" class="hour">10:00</div><div id="day-3-hour-11" class="hour">11:00</div><div id="day-3-hour-12" class="hour">12:00</div><div id="day-3-hour-14" class="hour">13:00</div>
 	</div>
    </div>
   <div id="next" class="nav left" onClick="next()";>></div>
 </div>
 <script>
 
+var sampleData={'2020-07-14':{'available':[11],'reserved':[10,13]},
+				'2020-07-15':{'available':[10],'reserved':[11,13]},
+				'2020-07-16':{'available':[13],'reserved':[10]},
+				'2020-07-19':{'available':[11],'reserved':[13]},
+				'2020-07-20':{'available':[11],'reserved':[10,13]},
+				'2020-07-21':{'available':[10],'reserved':[11,13]},
+				'2020-07-22':{'available':[11],'reserved':[10,13]}
+				};
+
+
+
 function getDayMonthSeries(firstDate,numberOfDates)
 {
 	var month=new Array();
 	var datesDayMonth=Array();
+	var datesDisplayed = new Array();
 	
 	month[0]="Jan";
 	month[1]="Feb";
@@ -87,8 +99,11 @@ function getDayMonthSeries(firstDate,numberOfDates)
 	tempDates[0]=firstDate;
 	var theMonth = tempDates[0].getMonth();
 	var monthShortCut = month[theMonth];
+	var monthRealNumber = theMonth+1;
 	var theDay = tempDates[0].getDate();
+	var theYear = tempDates[0].getFullYear();
 	datesDayMonth[0] = theDay + " " + monthShortCut;
+	datesDisplayed[0] = theYear+"-"+("0" + monthRealNumber).slice(-2)+"-"+("0" + theDay).slice(-2);
 	
 	for ( var i=1; i< numberOfDates ;i++)
 	{
@@ -96,10 +111,16 @@ function getDayMonthSeries(firstDate,numberOfDates)
 		tempDates[i].setDate(tempDates[i-1].getDate() + 1);
 		var theMonth = tempDates[i].getMonth();
 		var monthShortCut = month[theMonth];
+		var monthRealNumber = theMonth+1;
 		var theDay = tempDates[i].getDate();
+		var theYear = tempDates[0].getFullYear();
 		datesDayMonth[i] = theDay + " " + monthShortCut;
+		datesDisplayed[i] = theYear+"-"+("0" + monthRealNumber).slice(-2)+"-"+("0" + theDay).slice(-2);
 	}
-	return datesDayMonth;
+	var datesArrays={};
+	datesArrays.dayMonth=datesDayMonth;
+	datesArrays.datesDisplayed=datesDisplayed;
+	return datesArrays;
 
 }
 
@@ -107,9 +128,12 @@ function previous()
 {
 	var tempDate= new Date();
 	tempDate.setDate(currentDate.getDate() - 4);
-	var datesDayMonth = getDayMonthSeries(tempDate,4);
-	displayDayMonth(datesDayMonth);
+	var datesArrays = getDayMonthSeries(tempDate,4);
+	displayDayMonth(datesArrays.dayMonth);
+	readData(datesArrays.datesDisplayed,sampleData);
 	currentDate=tempDate;
+
+	
 
 }
 
@@ -117,9 +141,33 @@ function next()
 {
 	var tempDate= new Date();
 	tempDate.setDate(currentDate.getDate() + 4);
-	var datesDayMonth = getDayMonthSeries(tempDate,4);
-	displayDayMonth(datesDayMonth);
+	var datesArrays = getDayMonthSeries(tempDate,4);
+	displayDayMonth(datesArrays.dayMonth);
+	readData(datesArrays.datesDisplayed,sampleData);
 	currentDate=tempDate;
+}
+
+function readData(datesDisplayed,inputData)
+{
+	for ( var i =0;i<datesDisplayed.length;i++)
+	{
+		if (inputData[datesDisplayed[i]]&& inputData[datesDisplayed[i]].available) {
+			var availableHours = inputData[datesDisplayed[i]].available;
+			for ( var j=0;j<availableHours.length;j++ )
+			{
+				var divId="day-"+i+"-hour-"+availableHours[j];
+				document.getElementById(divId).classList.add("available");
+			}
+		}
+		if (inputData[datesDisplayed[i]]&& inputData[datesDisplayed[i]].reserved) {
+			var reservedHours = inputData[datesDisplayed[i]].reserved;
+			for ( var j=0;j<reservedHours.length;j++ )
+			{
+				var divId="day-"+i+"-hour-"+reservedHours[j];
+				document.getElementById(divId).classList.add("reserved");
+			}
+		}
+	}
 }
 
 var currentDate;
@@ -127,16 +175,19 @@ var currentDate;
 
 var displayDayMonth = function(datesDayMonth)
 {
-	document.getElementById("day-1").innerHTML = datesDayMonth[0];
-	document.getElementById("day-2").innerHTML = datesDayMonth[1];
-	document.getElementById("day-3").innerHTML = datesDayMonth[2];
-	document.getElementById("day-4").innerHTML = datesDayMonth[3];
+	document.getElementById("day-0").innerHTML = datesDayMonth[0];
+	document.getElementById("day-1").innerHTML = datesDayMonth[1];
+	document.getElementById("day-2").innerHTML = datesDayMonth[2];
+	document.getElementById("day-3").innerHTML = datesDayMonth[3];
 }
 onload = function(){
 
+	
 	currentDate=new Date();
-	var datesDayMonth = getDayMonthSeries(new Date(),4);
-	displayDayMonth(datesDayMonth);
+	var datesArrays = getDayMonthSeries(new Date(),4);
+	displayDayMonth(datesArrays.dayMonth);
+	
+	readData(datesArrays.datesDisplayed,sampleData);
 }
 
 </script>
