@@ -3,16 +3,23 @@
 <style>
 .reserved
 {
-	color:red;
-
+	color:lightgray;
+	border:1px solid white;
 }
-.hour
+.non-available
 {
 	color:white;
+	border:1px solid white;
 }
 .available{
 	color:green;
-
+	border:1px solid white;
+	cursor:pointer;
+	background:#d3fcd3;
+	border-radius: 17px;
+}
+.available:hover{
+	border:1px solid green;
 }
 .your-reservation
 {
@@ -48,36 +55,132 @@
   <div id="previous" class="nav left" onClick="previous();"><</div>
   <div id="hours-in-day">
 	<div class="column">
-	  <div class="date-list" id="day-0"></div><div id="day-0-hour-10" class="hour">10:00</div><div id="day-0-hour-11" class="hour">11:00</div><div id="day-0-hour-12" class="hour">12:00</div><div id="day-0-hour-13" class="hour">13:00</div>
+	  <div class="date-list" id="day-0"></div><div id="day-0-hour-10" class="hour non-available">10:00</div><div id="day-0-hour-11" class="hour non-available">11:00</div><div id="day-0-hour-12" class="hour non-available">12:00</div><div id="day-0-hour-13" class="hour non-available">13:00</div>
 	</div>
   	<div class="column">
-		<div class="date-list" id="day-1"></div><div id="day-1-hour-10" class="hour">10:00</div><div id="day-1-hour-11" class="hour">11:00</div><div id="day-1-hour-12" class="hour">12:00</div><div id="day-1-hour-13" class="hour">13:00</div>
+		<div class="date-list" id="day-1"></div><div id="day-1-hour-10" class="hour non-available">10:00</div><div id="day-1-hour-11" class="hour non-available">11:00</div><div id="day-1-hour-12" class="hour non-available">12:00</div><div id="day-1-hour-13" class="hour non-available">13:00</div>
 	</div>
 	<div class="column">
-	  <div class="date-list" id="day-2"></div><div id="day-2-hour-10" class="hour">10:00</div><div id="day-2-hour-11" class="hour">11:00</div><div id="day-2-hour-12" class="hour">12:00</div><div id="day-2-hour-13" class="hour">13:00</div>
+	  <div class="date-list" id="day-2"></div><div id="day-2-hour-10" class="hour non-available">10:00</div><div id="day-2-hour-11" class="hour non-available">11:00</div><div id="day-2-hour-12" class="hour non-available">12:00</div><div id="day-2-hour-13" class="hour non-available">13:00</div>
 	</div>
 	<div class="column">
-	  <div class="date-list" id="day-3"></div><div id="day-3-hour-10" class="hour">10:00</div><div id="day-3-hour-11" class="hour">11:00</div><div id="day-3-hour-12" class="hour">12:00</div><div id="day-3-hour-14" class="hour">13:00</div>
+	  <div class="date-list" id="day-3"></div><div id="day-3-hour-10" class="hour non-available">10:00</div><div id="day-3-hour-11" class="hour non-available">11:00</div><div id="day-3-hour-12" class="hour non-available">12:00</div><div id="day-3-hour-13" class="hour non-available">13:00</div>
 	</div>
    </div>
   <div id="next" class="nav left" onClick="next()";>></div>
 </div>
+<br>
+<h2>Your Reservation:</h2>
+<div id="reservation">Click on an available hour (green color)</div>
 <script>
 
-var sampleData={'2020-07-14':{'available':[11],'reserved':[10,13]},
+
+
+/*var sampleData={'2020-07-14':{'available':[11],'reserved':[10,13]},
 				'2020-07-15':{'available':[10],'reserved':[11,13]},
 				'2020-07-16':{'available':[13],'reserved':[10]},
 				'2020-07-19':{'available':[11],'reserved':[13]},
 				'2020-07-20':{'available':[11],'reserved':[10,13]},
 				'2020-07-21':{'available':[10],'reserved':[11,13]},
 				'2020-07-22':{'available':[11],'reserved':[10,13]}
-				};
+				};*/
+
+function getSampleData(){
+
+	var sampleData={};
+
+	for ( var i=0; i<20;i++ )
+	{
+		if ( i==0 )
+		{
+			tempDate= new Date();
+			
+		} else {
+		
+			tempDate.setDate(tempDate.getDate() + 1);	
+		}
 
 
+		var theMonth = tempDate.getMonth();
+		var monthRealNumber = theMonth+1;
+		var theDay = tempDate.getDate();
+		var theYear = tempDate.getFullYear();
+		dateDisplayed = theYear+"-"+("0" + monthRealNumber).slice(-2)+"-"+("0" + theDay).slice(-2);
+		
+		switch(i) {
+		  case 0:
+			sampleData[dateDisplayed]={'available':[11],'reserved':[10,13]};
+			break;
+		  case 1:
+			sampleData[dateDisplayed]={'available':[],'reserved':[10,11,12,13]};
+			break;
+		  case 2:
+			sampleData[dateDisplayed]={'available':[11],'reserved':[10,13]};
+			break;
+		  case 3:
+			sampleData[dateDisplayed]={'available':[10,12,13],'reserved':[11]};
+			break;
+		  case 4:
+			sampleData[dateDisplayed]={'available':[11],'reserved':[]};
+			break;
+		  case 5:
+			sampleData[dateDisplayed]={'available':[11,12],'reserved':[10,13]};
+			break;
+		  case 6:
+			sampleData[dateDisplayed]={'available':[],'reserved':[]};
+			break;
+		  case 7:
+			sampleData[dateDisplayed]={'available':[],'reserved':[]};
+			break;
+		  case 8:
+			sampleData[dateDisplayed]={'available':[11],'reserved':[10,13]};
+			break;
+		  case 9:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[13]};
+			break;
+		  case 10:
+			sampleData[dateDisplayed]={'available':[10,11],'reserved':[13]};
+			break;		  
+		  case 11:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[13]};
+			break;
+		  case 12:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[13]};
+			break;
+		  case 13:
+			sampleData[dateDisplayed]={'available':[10,11],'reserved':[13]};
+			break;
+		  case 14:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[11]};
+			break;
+		  case 15:
+			sampleData[dateDisplayed]={'available':[10,11],'reserved':[]};
+			break;
+		  case 16:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[12]};
+			break;
+		  case 17:
+			sampleData[dateDisplayed]={'available':[10,11],'reserved':[12]};
+			break;
+		  case 18:
+			sampleData[dateDisplayed]={'available':[],'reserved':[11]};
+			break;
+		  case 19:
+			sampleData[dateDisplayed]={'available':[10,13],'reserved':[12]};		
+		    break;		  
+		default:
+			sampleData[dateDisplayed]={'available':[],'reserved':[]};	
+		}
+
+	}	
+		
+	return sampleData;
+}
 
 function getDayMonthSeries(firstDate,numberOfDates)
 {
 	var month=new Array();
+	var dayWeek=new Array();
 	var datesDayMonth=Array();
 	var datesDisplayed = new Array();
 	
@@ -93,6 +196,15 @@ function getDayMonthSeries(firstDate,numberOfDates)
 	month[9]="Oct";
 	month[10]="Nov";
 	month[11]="Dec";
+	
+	dayWeek[0]="Mon";
+	dayWeek[1]="Tue";
+	dayWeek[2]="Wed";
+	dayWeek[3]="Thu";
+	dayWeek[4]="Fri";
+	dayWeek[5]="Sat";
+	dayWeek[6]="Sun";
+	
 
 	var tempDates=new Array();
 	
@@ -102,7 +214,8 @@ function getDayMonthSeries(firstDate,numberOfDates)
 	var monthRealNumber = theMonth+1;
 	var theDay = tempDates[0].getDate();
 	var theYear = tempDates[0].getFullYear();
-	datesDayMonth[0] = theDay + " " + monthShortCut;
+	var theDayName = dayWeek[tempDates[0].getDay()];
+	datesDayMonth[0] = theDayName + "<br>" + theDay + " " + monthShortCut;
 	datesDisplayed[0] = theYear+"-"+("0" + monthRealNumber).slice(-2)+"-"+("0" + theDay).slice(-2);
 	
 	for ( var i=1; i< numberOfDates ;i++)
@@ -113,8 +226,9 @@ function getDayMonthSeries(firstDate,numberOfDates)
 		var monthShortCut = month[theMonth];
 		var monthRealNumber = theMonth+1;
 		var theDay = tempDates[i].getDate();
-		var theYear = tempDates[0].getFullYear();
-		datesDayMonth[i] = theDay + " " + monthShortCut;
+		var theYear = tempDates[i].getFullYear();
+		var theDayName = dayWeek[tempDates[i].getDay()];
+		datesDayMonth[i] = theDayName + "<br>"  + theDay + " " + monthShortCut;
 		datesDisplayed[i] = theYear+"-"+("0" + monthRealNumber).slice(-2)+"-"+("0" + theDay).slice(-2);
 	}
 	var datesArrays={};
@@ -147,8 +261,33 @@ function next()
 	currentDate=tempDate;
 }
 
+function chooseDate()
+{
+  var reservation=this.getAttribute('date')+" "+this.innerHTML;
+  document.getElementById('reservation').innerHTML=reservation;
+}
+
 function readData(datesDisplayed,inputData)
 {
+	for ( var i =0;i<4;i++)
+	{
+		for ( var j=10;j<14;j++ )
+		{
+			divId="day-"+i+"-hour-"+j;
+			
+			if (document.getElementById(divId).classList){
+			
+				var classList = document.getElementById(divId).classList;
+				
+				while (classList.length > 0) {
+				   classList.remove(classList.item(0));
+				}
+				document.getElementById(divId).classList.add("non-available");
+				document.getElementById(divId).classList.add("hour");
+				document.getElementById(divId).removeEventListener("click", chooseDate);
+			}
+		}
+	}
 	for ( var i =0;i<datesDisplayed.length;i++)
 	{
 		if (inputData[datesDisplayed[i]]&& inputData[datesDisplayed[i]].available) {
@@ -156,7 +295,12 @@ function readData(datesDisplayed,inputData)
 			for ( var j=0;j<availableHours.length;j++ )
 			{
 				var divId="day-"+i+"-hour-"+availableHours[j];
-				document.getElementById(divId).classList.add("available");
+				if (document.getElementById(divId).classList){
+					document.getElementById(divId).classList.remove("non-available");
+					document.getElementById(divId).classList.add("available");
+					document.getElementById(divId).setAttribute('date',datesDisplayed[i]);
+					document.getElementById(divId).addEventListener("click", chooseDate);
+				}
 			}
 		}
 		if (inputData[datesDisplayed[i]]&& inputData[datesDisplayed[i]].reserved) {
@@ -164,14 +308,17 @@ function readData(datesDisplayed,inputData)
 			for ( var j=0;j<reservedHours.length;j++ )
 			{
 				var divId="day-"+i+"-hour-"+reservedHours[j];
-				document.getElementById(divId).classList.add("reserved");
+				if (document.getElementById(divId).classList){
+					document.getElementById(divId).classList.remove("non-available");
+					document.getElementById(divId).classList.add("reserved");
+				}
 			}
 		}
 	}
 }
 
 var currentDate;
-
+var sampleData = getSampleData();
 
 var displayDayMonth = function(datesDayMonth)
 {
