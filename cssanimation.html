@@ -1,0 +1,72 @@
+<html>
+<head>
+<style>
+body{
+  margin:0px;
+}
+.top-div{
+  background:lightgrey;
+  height:800px;
+}
+#animated{
+  background:aliceblue;
+  height:500px;
+}
+#debug{
+ height:20px;
+}
+
+
+#animated.launched{
+	animation-name: left-to-right;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+	transition-timing-function: ease-out;
+}
+@keyframes left-to-right{
+	0% {
+		padding-left:0px;
+	}
+	100% {
+		padding-left:180px;
+	}
+}
+</style>
+
+</head>
+<body>
+
+<div class="top-div">
+Scroll down
+</div>
+<div id="debug">
+</div>
+<div id="animated">
+0
+</div>
+                    
+<script>
+let heightBeforeAnimated = 820;
+let animationHeight = 500;
+let isAnimationLaunched = false;
+
+window.addEventListener("scroll",function(){
+
+  var animatedVisible = window.innerHeight - heightBeforeAnimated + document.body.scrollTop;
+
+  visibilityIndex = animatedVisible * 100 / animationHeight;
+  
+  document.getElementById("debug").innerHTML = "percentage visible"+visibilityIndex+" how much scrolled:"+document.body.scrollTop+"height above animated (param):"+heightBeforeAnimated+" Screen height:"+window.innerHeight+" .Visible from animated:"+animatedVisible;
+
+  if ( ( visibilityIndex > 49 ) && (!isAnimationLaunched)){
+	document.getElementById("animated").classList.add("launched");
+	isAnimationLaunched = true;
+  }
+  
+
+})
+
+
+</script>			
+</body>
+</html>
