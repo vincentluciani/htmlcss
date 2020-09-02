@@ -21,7 +21,7 @@ body{
 	animation-name: left-to-right;
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
-	transition-timing-function: ease-out;
+	transition-timing-function: ease-outn;
 }
 @keyframes left-to-right{
 	0% {
@@ -62,7 +62,10 @@ window.addEventListener("scroll",function(){
 	document.getElementById("animated").classList.add("launched");
 	isAnimationLaunched = true;
   }
-  
+    if ( ( visibilityIndex < 10 ) && (isAnimationLaunched)){
+	document.getElementById("animated").classList.remove("launched");
+	isAnimationLaunched = false;
+  }
 
 })
 
