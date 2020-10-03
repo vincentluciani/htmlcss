@@ -3,18 +3,23 @@
 <style>
 body{
   margin:0px;
+  font-size:50px;
 }
 .top-div{
   background:lightgrey;
   height:800px;
 }
-#animated{
+#animation-wrapper{
   background:aliceblue;
   height:500px;
+  padding:40px;
 }
-#debug{
- height:20px;
+#animated{
+  width:50px;
+  height:50px;
+  background:#327fde;
 }
+
 
 
 #animated.launched{
@@ -22,14 +27,16 @@ body{
     animation-duration: 0.5s;
     animation-fill-mode: forwards;
 	transition-timing-function: ease-outn;
+	
+	
 }
 @keyframes left-to-right{
-	0% {
-		padding-left:0px;
-	}
 	100% {
-		padding-left:180px;
-	}
+        transform: transform: scale(1.9) translate(300px,0);
+        -webkit-transform: scale(1.9) translate(300px,0);
+        -o-transform: scale(1.9) translate(300px,0);
+         -moz-transform: scale(1.9) translate(300px,0);
+   }
 }
 </style>
 
@@ -37,16 +44,15 @@ body{
 <body>
 
 <div class="top-div">
-Scroll down
+SCROLL DOWN UNTIL YOU SEE A BLUE SQUARE MOVING
 </div>
-<div id="debug">
-</div>
-<div id="animated">
-0
+
+<div id="animation-wrapper">
+	<div id="animated"></div>
 </div>
                     
 <script>
-let heightBeforeAnimated = 820;
+let heightBeforeAnimated = 800;
 let animationHeight = 500;
 let isAnimationLaunched = false;
 
@@ -56,8 +62,6 @@ window.addEventListener("scroll",function(){
 
   visibilityIndex = animatedVisible * 100 / animationHeight;
   
-  document.getElementById("debug").innerHTML = "percentage visible"+visibilityIndex+" how much scrolled:"+document.body.scrollTop+"height above animated (param):"+heightBeforeAnimated+" Screen height:"+window.innerHeight+" .Visible from animated:"+animatedVisible;
-
   if ( ( visibilityIndex > 49 ) && (!isAnimationLaunched)){
 	document.getElementById("animated").classList.add("launched");
 	isAnimationLaunched = true;
