@@ -1,0 +1,77 @@
+<html>
+
+<body>
+    <canvas id="playingCanva" height="250" width="250">Sorry, your browser does not support canvas.</canvas>
+    <button type="button" id="startbutton" onclick="init()">Start</button>
+    <script>
+        let theta = 0;
+        let r = 100;
+        let n = 1;
+
+        var canvas;
+        var context;
+        var currentElement;
+        var interval = 20;
+        var increment = Math.PI / 500;
+
+        function init() {
+            canvas = document.getElementById("playingCanva");
+            sizeCanva();
+            context = canvas.getContext("2d");
+            context.fillStyle = 'rgb(17, 195, 7)';
+            context.strokeStyle = context.fillStyle;
+
+            timer = setInterval(draw, interval);
+
+            return timer;
+        }
+
+        function sizeCanva() {
+            canvas.width = 400;
+            canvas.heigth = 400;
+        }
+        function draw() {
+            var canvaContainer = document.getElementById("container");
+            var positions = calculatePositions(increment);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawPoints(positions);
+        }
+
+        function calculatePositions() {
+
+            var positions = [];
+
+            theta = theta + increment;
+
+            positions[0] = calculatePosition(theta);
+            positions[1] = calculatePosition(theta - increment);
+            positions[2] = calculatePosition(theta - 2 * increment);
+            positions[3] = calculatePosition(theta - 3 * increment);
+
+            return positions;
+        }
+
+        function calculatePosition(theta) {
+            x = 100 + r * Math.cos(theta);
+            y = 100 + r * Math.sin(theta);
+
+            var position = {
+                x: x,
+                y: y
+            }
+
+            return position;
+        }
+        function drawPoints(positions) {
+            for (i = 0; i < positions.length; i++) {
+                var position = positions[i];
+                context.fillRect(position.x, position.y, 2, 2);
+            }
+        }
+
+
+
+    </script>
+</body>
+
+</html>

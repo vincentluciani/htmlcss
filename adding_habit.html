@@ -1,0 +1,139 @@
+<html>
+    <header>
+        <style>
+            .box{
+                padding: 10px;
+                box-shadow: -1px 2px 20px 0px rgb(0 0 0 / 20%);
+                border-radius: 12px;
+                margin:10px;
+            }
+            .box.new-habit{
+                width:172px;
+                height:180px;
+            }
+            .box.habit-update{
+                width:172px;
+                height:180px;
+            }
+            .habits-container,.filter-bar{
+                display: flex;
+                flex-wrap: wrap;
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .filter-bar{
+                width: 100%;
+            }
+        </style>
+    </header>
+    <body>
+        <div class="filter-bar">
+            <label>Habit:</label><input id="text-filter" type="text" /><label>   Date:</label><input id="date-filter" type="date" />
+        </div>
+        <div class="habits-container">
+            <div class="box habit-update" date="2022-01-05" title="contraction during meeting">
+                <div>05/01/2022</div> (today)<br>
+                <div>contraction during meeting</div><br>
+                <label>Current Progress:</label>
+                <input type="number" /><br><br>
+                <button>Update</button>
+            </div>
+            <div class="box habit-update" date="2022-01-05" title="focus moment">
+                <div>05/01/2022</div> (today)<br>
+                <div>focus moment</div><br>
+                <label>Current Progress:</label>
+                <input type="number" /><br><br>
+                <button>Update</button>
+            </div>
+            <div class="box habit-update" date="2022-01-04" title="contraction during meeting">
+                <div>04/01/2022</div><br>
+                <div>contraction during meeting</div><br>
+                <label>Current Progress:</label>
+                <input type="number" /><br><br>
+                <button>Update</button>
+            </div>
+            <div class="box habit-update" date="2022-01-04" title="focus moment">
+                <div>04/01/2022</div><br>
+                <div>focus moment</div><br>
+                <label>Current Progress:</label>
+                <input type="number" /><br><br>
+                <button>Update</button>
+            </div>
+            <div class="box new-habit">
+                <div>New Habit</div><br>
+                <label>Description:</label>
+                <input type="text" /><br><br>
+                <label>Target:</label>
+                <input type="number" /><br><br>
+                <button>Add</button>
+            </div>
+        </div>
+        <script>
+
+            filterDivs = function(testElements, filterType, filterValue, exactMatch){
+                if (filterValue != null && filterValue != '' ){
+                    for (i=0; i< testElements.length; i++){
+                        var valueOfElementToTest = testElements[i].getAttribute(filterType);
+                        if ( (valueOfElementToTest == filterValue && exactMatch) || (valueOfElementToTest.includes(filterValue) && !exactMatch) ){
+
+                        } else {
+                            testElements[i].style.display =  'none'; 
+                        }
+                    }
+                }
+            }
+            resetElements = function(){
+                var testElements = document.getElementsByClassName('habit-update');
+                for (i=0; i< testElements.length; i++){
+                    testElements[i].style.display =  'block';
+                }
+                return testElements;
+            }
+            applyFilters = function(){
+                var testElements = resetElements();
+                var filterTitle = document.getElementById("text-filter").value;
+                var filterDate = document.getElementById("date-filter").value;
+
+                filterDivs(testElements,"date",filterDate,true);
+                filterDivs(testElements,"title",filterTitle,false);
+            }
+            onload = function(){
+                var currentDateTime = new Date();
+                var currentDate = currentDateTime.getFullYear().toString().padStart(2,'0')+'-'+(currentDateTime.getMonth()+1).toString().padStart(2,'0')+'-'+currentDateTime.getDate().toString().padStart(2,'0'); 
+
+                document.getElementById("date-filter").value=currentDate;
+                applyFilters();
+            }
+
+            var dateFilter = document.getElementById('date-filter')
+            dateFilter.addEventListener('input', function (evt) {
+                applyFilters();
+            });
+
+            var textFilter = document.getElementById('text-filter')
+            textFilter.addEventListener('input', function (evt) {
+                applyFilters();
+            });
+
+            addElement = function(values){
+                values.id = Date.now();
+                let div = document.createElement("div");
+                div.setAttribute("id", values.id);
+                div.setAttribute("date", values.date);
+                div.setAttribute("title", values.title);
+
+                document.body.appendChild(div);
+                elementList.append("test");
+
+            }
+
+            displayAllElements = function(elementList){
+                for (i=0; i< elementList.length; i++) {
+                    let div = document.createElement("div");
+                    document.body.appendChild(div);
+                }
+            }
+
+        </script>
+    </body>
+</html>
