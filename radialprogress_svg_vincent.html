@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <style>
+            #svg-progress-bar {
+                transform: rotate(-90deg);
+            }
+            #svg-progress-bar circle {
+                stroke-dashoffset: 0;
+                transition: stroke-dashoffset 2s linear;
+                stroke: #666;
+            }
+
+                  </style>
+    </head>
+    <body>
+        <div id="cont" data-pct="50">
+            <svg id="svg-progress-bar" height="100" width="100" >
+                <circle id="progress-circle" cx="50" cy="50" stroke-width="10" fill="red" />
+              </svg>
+            </div>
+            <script>
+                var percentageValue = 50;
+                var circleRadius = 40;
+                var circleDiv = document.getElementById('progress-circle');
+                
+                if (isNaN(percentageValue)) {
+                    percentageValue = 100; 
+                }
+                else{
+                    circleDiv.setAttribute('r',circleRadius);
+                    var circonference = Math.PI*circleRadius*2;
+                
+                    if (percentageValue < 0) { percentageValue = 0;}
+                    if (percentageValue > 100) { percentageValue = 100;}
+                    
+                    var emptyPathLength = ((100-percentageValue)/100)*circonference;
+                    
+                    /*circleDiv.setAttribute("stroke-dashoffset", emptyPathLength);*/
+
+
+                    window.setTimeout(function() {
+                        circleDiv.style.strokeDashoffset = emptyPathLength;
+                    }, 50)
+
+
+
+                    circleDiv.style.transition = "stroke-dashoffset 2s linear";
+                    circleDiv.setAttribute("stroke-dasharray", circonference);
+ 
+                   /* $('#cont').attr('data-pct',val);*/
+                }
+            </script>
+    </body>
+</html>
