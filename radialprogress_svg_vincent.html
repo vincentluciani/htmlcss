@@ -16,56 +16,98 @@
                 content: " %";
             }
             #percentage-circle-container{
-                height: 100px;
-                width: 100px;
+               /* height: 200px;
+                width: 200px;*/
             }
                   </style>
     </head>
     <body>
         <div id="percentage-circle-container">
-            <svg id="svg-progress-bar" height="100" width="100" >
-                <circle id="background-circle" cx="50" cy="50" fill="transparent" stroke-width="10" stroke-dashoffset="0"/>
-                <circle id="progress-circle" cx="50" cy="50" fill="transparent" stroke-width="10" stroke-dashoffset="0"></circle>
+            <svg id="svg-progress-bar"  >
+                <circle id="background-circle" fill="transparent" stroke-dashoffset="0"/>
+                <circle id="progress-circle" fill="transparent" stroke-dashoffset="0"></circle>
               </svg>
               <div id="percentage-value"></div>
         </div>
             <script>
-                var percentageValue = 90;
-                var circleRadius = 40;
-                var strokeWidth = 10;
-                var containerHeight = 100;
-                var fontHeight= 10;
-                var circleDiv = document.getElementById('background-circle');
-                var progressDiv = document.getElementById('progress-circle');
-                var percentageValueDiv = document.getElementById('percentage-value')
-                percentageValueDiv.innerHTML = percentageValue;
-                var textMarginTop = (-1)*(containerHeight - strokeWidth - circleRadius + fontHeight);
-                var textMarginLeft = (strokeWidth + circleRadius)/1.5;
-                percentageValueDiv.style.marginTop = textMarginTop;
-                percentageValueDiv.style.marginLeft = textMarginLeft;
-                if (isNaN(percentageValue)) {
-                    percentageValue = 100; 
+                var percentage = 55;
+
+                /*var radialProgressParameters = {    
+                    strokeWidth : 10,
+                    containerHeight : 100,
+                    fontSize:  10,
+                    progressColor: "#0bc30b",
+                    emptyColor: "#69e558"
+
+                    red
+                    progressColor: "rgb(240 41 41)",
+                    emptyColor: "rgb(245 208 208)"
+                }*/
+                var radialProgressParameters = {    
+                    strokeWidth : 10,
+                    containerHeight : 100,
+                    fontSize:  20,
+                    textLeftAdjustment: 0,
+                    textTopAdjustment: 0,
+                    progressColor: "rgb(245 184 1)",
+                    emptyColor: "rgb(240 221 165)"
                 }
-                else{
-                    circleDiv.setAttribute('r',circleRadius);
-                    progressDiv.setAttribute('r',circleRadius);
-                    var circonference = Math.PI*circleRadius*2;
-                
-                    if (percentageValue < 0) { percentageValue = 0;}
-                    if (percentageValue > 100) { percentageValue = 100;}
+
+                var radialProgressComponent = function( percentageValue, parameters){
+
+                    circleRadius = ( parameters.containerHeight / 2 ) - parameters.strokeWidth;
+
+                    var circleDiv = document.getElementById('background-circle');
+                    var progressDiv = document.getElementById('progress-circle');
+                    var percentageValueDiv = document.getElementById('percentage-value');
+                    var svgDiv = document.getElementById("svg-progress-bar");
+                    percentageValueDiv.innerHTML = percentageValue;
+
+                    svgDiv.setAttribute("height",parameters.containerHeight);
+                    svgDiv.setAttribute("width", parameters.containerHeight);
+
+                    progressDiv.style.stroke = parameters.progressColor;
+                    circleDiv.style.stroke  = parameters.emptyColor;
+
+                    circleDiv.setAttribute("cx", parameters.containerHeight/2);
+                    circleDiv.setAttribute("cy", parameters.containerHeight/2);
+                    circleDiv.setAttribute("stroke-width", parameters.strokeWidth);
+
+                    progressDiv.setAttribute("cx", parameters.containerHeight/2);
+                    progressDiv.setAttribute("cy", parameters.containerHeight/2);
+                    progressDiv.setAttribute("stroke-width", parameters.strokeWidth);
+
+                    var textMarginTop = (-1)*(parameters.containerHeight - parameters.strokeWidth - circleRadius + parameters.fontSize/1.9 + parameters.textTopAdjustment);
+                    var textMarginLeft = (parameters.strokeWidth + circleRadius)/1.5 + parameters.textLeftAdjustment;
+                    percentageValueDiv.style.marginTop = textMarginTop;
+                    percentageValueDiv.style.marginLeft = textMarginLeft;
+                    percentageValueDiv.style.fontSize = parameters.fontSize;
+                    if (isNaN(percentageValue)) {
+                        percentageValue = 100; 
+                    }
+                    else{
+                        circleDiv.setAttribute('r',circleRadius);
+                        progressDiv.setAttribute('r',circleRadius);
+                        var circonference = Math.PI*circleRadius*2;
                     
-                    var emptyPathLength = ((100-percentageValue)/100)*circonference;
-                    
-                    progressDiv.setAttribute("stroke-dashoffset", emptyPathLength);
+                        if (percentageValue < 0) { percentageValue = 0;}
+                        if (percentageValue > 100) { percentageValue = 100;}
+                        
+                        var emptyPathLength = ((100-percentageValue)/100)*circonference;
+                        
+                        progressDiv.setAttribute("stroke-dashoffset", emptyPathLength);
 
 
-                    window.setTimeout(function() {
-                        progressDiv.style.strokeDashoffset = emptyPathLength;
-                    }, 50)
+                        window.setTimeout(function() {
+                            progressDiv.style.strokeDashoffset = emptyPathLength;
+                        }, 50)
 
-                    progressDiv.setAttribute("stroke-dasharray", circonference);
-                    circleDiv.setAttribute("stroke-dasharray", circonference);
+                        progressDiv.setAttribute("stroke-dasharray", circonference);
+                        circleDiv.setAttribute("stroke-dasharray", circonference);
+                    }
                 }
+
+                radialProgressComponent(percentage, radialProgressParameters);
             </script>
     </body>
 </html>
