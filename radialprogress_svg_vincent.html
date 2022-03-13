@@ -31,18 +31,16 @@
                     suffixForIds: "12345"
                 }
 
-                var radialProgressComponent = function(percentageValue, parameters){
+                var radialProgressComponent = function(percentageValue){
                     
-                    var anchorDiv = document.getElementById(parameters.anchorDivId);
-                    var circleContainer = CreateProgressElements(parameters);
-                    anchorDiv.appendChild(circleContainer);
-                    buildRadialProgressComponent(percentageValue, parameters);
+
+
 
                     /*setTimeout(function(circleContainer){anchorDiv.appendChild(circleContainer);}, 1000);*/
                     /*setTimeout(buildRadialProgressComponent, 2000, percentageValue, parameters);*/
 
                 }
-                var buildRadialProgressComponent = function( percentageValue, parameters){
+                var updateProgressOnRadial = function( percentageValue, parameters){
 
                     circleRadius = ( parameters.containerHeight / 2 ) - parameters.strokeWidth;
 
@@ -52,23 +50,23 @@
                     
                     var percentageCircleContainer = document.getElementById(parameters.suffixForIds+'_percentage-circle-container');
 
-                    var svgDiv = percentageCircleContainer.childNodes[0];
                     percentageValueDiv.innerHTML = percentageValue + " %";
-
+/*  
+                    var svgDiv = percentageCircleContainer.childNodes[0];
                     svgDiv.setAttribute("height",parameters.containerHeight);
                     svgDiv.setAttribute("width", parameters.containerHeight);
-                    svgDiv.style.transform = "rotate(-90deg)";
+                    svgDiv.style.transform = "rotate(-90deg)";*/
                     
                     progressDiv.style.stroke = parameters.progressColor;
                     circleDiv.style.stroke  = parameters.emptyColor;
 
-                    circleDiv.setAttribute("cx", parameters.containerHeight/2);
+                    /*circleDiv.setAttribute("cx", parameters.containerHeight/2);
                     circleDiv.setAttribute("cy", parameters.containerHeight/2);
                     circleDiv.setAttribute("stroke-width", parameters.strokeWidth);
 
                     progressDiv.setAttribute("cx", parameters.containerHeight/2);
                     progressDiv.setAttribute("cy", parameters.containerHeight/2);
-                    progressDiv.setAttribute("stroke-width", parameters.strokeWidth);
+                    progressDiv.setAttribute("stroke-width", parameters.strokeWidth);*/
 
 
                     var textMarginTop = (-1)*(parameters.containerHeight - parameters.strokeWidth - circleRadius + parameters.fontSize/1.9 + parameters.textTopAdjustment);
@@ -102,7 +100,9 @@
                 }
 
 
-                var CreateProgressElements = function(parameters){
+                var createProgressElements = function(parameters){
+
+                    var anchorDiv = document.getElementById(parameters.anchorDivId);
 
 
                     var w3uri = 'http://www.w3.org/2000/svg';
@@ -122,8 +122,21 @@
                     progressCircle.setAttribute("fill","transparent");                    
                     progressCircle.setAttribute("stroke-dashoffset","0"); 
 
+                    backgroundCircle.setAttribute("cx", parameters.containerHeight/2);
+                    backgroundCircle.setAttribute("cy", parameters.containerHeight/2);
+                    backgroundCircle.setAttribute("stroke-width", parameters.strokeWidth);
+
+                    progressCircle.setAttribute("cx", parameters.containerHeight/2);
+                    progressCircle.setAttribute("cy", parameters.containerHeight/2);
+                    progressCircle.setAttribute("stroke-width", parameters.strokeWidth);
+
                     const percentageValue = document.createElement("div");
                     percentageValue.setAttribute("id",parameters.suffixForIds+"_percentage-value");
+                    percentageValue.innerHTML = "0 %";
+
+                    svgProgressBar.setAttribute("height",parameters.containerHeight);
+                    svgProgressBar.setAttribute("width", parameters.containerHeight);
+                    svgProgressBar.style.transform = "rotate(-90deg)"
 
                     svgProgressBar.appendChild(backgroundCircle);
                     svgProgressBar.appendChild(progressCircle);
@@ -131,10 +144,11 @@
                     circleContainer.appendChild(svgProgressBar);
                     circleContainer.appendChild(percentageValue);
 
-                    return circleContainer;
+                    anchorDiv.appendChild(circleContainer);
                 }
 
-                radialProgressComponent(percentage, radialProgressParameters);
+                createProgressElements(radialProgressParameters);
+                updateProgressOnRadial(percentage, radialProgressParameters);
             </script>
     </body>
 </html>
