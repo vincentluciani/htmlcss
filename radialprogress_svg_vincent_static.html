@@ -1,12 +1,39 @@
 <html>
-
+    <head>
+        <style>
+            #svg-progress-bar {
+                transform: rotate(-90deg);
+            }
+            #progress-circle {
+                stroke-dashoffset: 0;
+               /* transition: stroke-dashoffset 0.5s linear;*/
+               stroke: #0bc30b;
+            }
+            #background-circle{
+                stroke: #69e558;                
+            }
+            #percentage-value::after{
+                content: " %";
+            }
+            #percentage-circle-container{
+               /* height: 200px;
+                width: 200px;*/
+            }
+                  </style>
+    </head>
     <body>
 
         <div id="anchor">
-        </div> 
+           <div id="percentage-circle-container">
+                <svg id="svg-progress-bar"  >
+                    <circle id="background-circle" fill="transparent" stroke-dashoffset="0"/>
+                    <circle id="progress-circle" fill="transparent" stroke-dashoffset="0"></circle>
+                  </svg>
+                  <div id="percentage-value"></div>
+            </div> 
     </div>
             <script>
-                var percentage = 75;
+                var percentage = 55;
 
                 /*var radialProgressParameters = {    
                     strokeWidth : 10,
@@ -27,15 +54,14 @@
                     textTopAdjustment: 0,
                     progressColor: "rgb(245 184 1)",
                     emptyColor: "rgb(240 221 165)",
-                    anchorDivId: "anchor",
-                    suffixForIds: "12345"
+                    anchorDivId: "anchor"
                 }
 
                 var radialProgressComponent = function(percentageValue, parameters){
-                    
+
                     var anchorDiv = document.getElementById(parameters.anchorDivId);
-                    var circleContainer = CreateProgressElements(parameters);
-                    anchorDiv.appendChild(circleContainer);
+                    var circleContainer = CreateProgressElements(parameters.anchorDivId);
+                    /*anchorDiv.appendChild(circleContainer);*/
                     buildRadialProgressComponent(percentageValue, parameters);
 
                     /*setTimeout(function(circleContainer){anchorDiv.appendChild(circleContainer);}, 1000);*/
@@ -46,18 +72,17 @@
 
                     circleRadius = ( parameters.containerHeight / 2 ) - parameters.strokeWidth;
 
-                    var circleDiv = document.getElementById(parameters.suffixForIds+'_background-circle');
-                    var progressDiv = document.getElementById(parameters.suffixForIds+'_progress-circle');
-                    var percentageValueDiv = document.getElementById(parameters.suffixForIds+'_percentage-value');
-                    
-                    var percentageCircleContainer = document.getElementById(parameters.suffixForIds+'_percentage-circle-container');
-
-                    var svgDiv = percentageCircleContainer.childNodes[0];
-                    percentageValueDiv.innerHTML = percentageValue + " %";
+                    var circleDiv = document.getElementById('background-circle');
+                    var progressDiv = document.getElementById('progress-circle');
+                    var percentageValueDiv = document.getElementById('percentage-value');
+                    var percentageCircleContainer = document.getElementById('percentage-circle-container');
+                    var svgDiv = document.getElementById('svg-progress-bar');
+                     percentageValueDiv.innerHTML = percentageValue;
 
                     svgDiv.setAttribute("height",parameters.containerHeight);
                     svgDiv.setAttribute("width", parameters.containerHeight);
-                    svgDiv.style.transform = "rotate(-90deg)";
+                  /*  svgDiv.setAttribute('xmlns',"http://www.w3.org/2000/svg");
+                    svgDiv.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink");*/
                     
                     progressDiv.style.stroke = parameters.progressColor;
                     circleDiv.style.stroke  = parameters.emptyColor;
@@ -102,28 +127,28 @@
                 }
 
 
-                var CreateProgressElements = function(parameters){
+                var CreateProgressElements = function(){
 
 
                     var w3uri = 'http://www.w3.org/2000/svg';
 
                     const circleContainer = document.createElement("div");
-                    circleContainer.setAttribute("id",parameters.suffixForIds+"_percentage-circle-container");
+                    circleContainer.setAttribute("id","percentage-circle-container");
                     const svgProgressBar = document.createElementNS(w3uri,'svg');
-                    svgProgressBar.setAttributeNS(w3uri,"id",parameters.suffixForIds+"_svg-progress-bar");
+                    svgProgressBar.setAttributeNS(w3uri,"id","svg-progress-bar");
 
                     const backgroundCircle = document.createElementNS(w3uri,'circle');
-                    backgroundCircle.setAttribute("id",parameters.suffixForIds+"_background-circle");
+                    backgroundCircle.setAttribute("id","background-circle");
                     backgroundCircle.setAttribute("fill","transparent");                    
                     backgroundCircle.setAttribute("stroke-dashoffset","0"); 
 
                     const progressCircle = document.createElementNS(w3uri,'circle');
-                    progressCircle.setAttribute("id",parameters.suffixForIds+"_progress-circle");
+                    progressCircle.setAttribute("id","progress-circle");
                     progressCircle.setAttribute("fill","transparent");                    
                     progressCircle.setAttribute("stroke-dashoffset","0"); 
 
                     const percentageValue = document.createElement("div");
-                    percentageValue.setAttribute("id",parameters.suffixForIds+"_percentage-value");
+                    percentageValue.setAttribute("id","percentage-value");
 
                     svgProgressBar.appendChild(backgroundCircle);
                     svgProgressBar.appendChild(progressCircle);
