@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <style>
+            .overlay{
+                background-color: white;
+                z-index:20;
+            }
+            .background{
+                background-color: grey;
+                opacity: 0.7;
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                z-index: 10;
+                width: 100vw;
+                height: 100vh;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="normal-background">text in background</div>
+        <div class="overlay">Text in overlay</div>
+        <div class="background"></div>
+    </body>
+</html>
